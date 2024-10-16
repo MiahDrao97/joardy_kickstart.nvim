@@ -176,10 +176,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -323,6 +323,33 @@ require('lazy').setup({
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
+  },
+  {
+    'theprimeagen/harpoon',
+    config = function()
+      local mark = require 'harpoon.mark'
+      local ui = require 'harpoon.ui'
+
+      vim.keymap.set('n', '<leader>a', mark.toggle_file)
+      vim.keymap.set('n', '<leader>z', mark.clear_all)
+      vim.keymap.set('n', '<C-e>', ui.toggle_quick_menu)
+      vim.keymap.set('n', '<C-h>', function()
+        ui.nav_file(1)
+      end)
+      vim.keymap.set('n', '<C-j>', function()
+        ui.nav_file(2)
+      end)
+      vim.keymap.set('n', '<C-k>', function()
+        ui.nav_file(3)
+      end)
+      vim.keymap.set('n', '<C-l>', function()
+        ui.nav_file(4)
+      end)
+    end,
+  },
+  {
+    'echasnovski/mini.pairs',
+    config = require('mini.pairs').setup(),
   },
 
   -- NOTE: Plugins can specify dependencies.
@@ -632,6 +659,10 @@ require('lazy').setup({
             },
           },
         },
+        zls = {
+          cmd = { '/git/zls/zig-out/bin/zls.exe' },
+          filetypes = { 'zig', 'zon' },
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -929,7 +960,9 @@ require('lazy').setup({
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  {
+    import = 'custom.plugins',
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
