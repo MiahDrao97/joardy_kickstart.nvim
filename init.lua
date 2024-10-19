@@ -964,9 +964,7 @@ require('lazy').setup({
   },
 })
 
--- This causes the background to become transparent
-vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
-vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+require('custom.underworld_z').descend_to_the_underworld()
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
