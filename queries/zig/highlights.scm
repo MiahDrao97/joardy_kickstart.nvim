@@ -30,6 +30,11 @@
 ("fn") @keyword.function
 
 [
+ "true"
+ "false"
+ ] @boolean
+
+[
  "usingnamespace"
  "struct"
  "enum"
