@@ -15,6 +15,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@keyword.return', { fg = '#ec4a90', force = true })
   vim.api.nvim_set_hl(0, '@keyword.repeat', { fg = '#ec4a90', force = true })
   vim.api.nvim_set_hl(0, '@lsp.type.typeParameter', { fg = '#ec4a90' })
+  vim.api.nvim_set_hl(0, 'underworld_z.typeparam', { link = '@lsp.type.typeParameter' })
   vim.api.nvim_set_hl(0, '@lsp.type.type', { fg = '#e15ac1' })
   vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#ec4a90' })
   vim.api.nvim_set_hl(0, 'IncSearch', { fg = '#000000', bg = '#ec4a90' })
@@ -27,31 +28,81 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@lsp.type.builtin.zig', { fg = '#af7b48' })
   vim.api.nvim_set_hl(0, '@module', { fg = '#cdcdcd' })
   vim.api.nvim_set_hl(0, '@variable.parameter', { fg = '#cb9af7' })
+  vim.api.nvim_set_hl(0, 'underworld_z.parameter', { fg = '#cb9af7' })
   vim.api.nvim_set_hl(0, '@lsp.type.enumMember', { fg = '#4fc1ff' })
   vim.api.nvim_set_hl(0, '@lsp.type.property', { fg = '#4fc1ff' })
   vim.api.nvim_set_hl(0, '@variable.member', { fg = '#4fc1ff' })
   vim.api.nvim_set_hl(0, '@property', { fg = '#4fc1ff' })
+  vim.api.nvim_set_hl(0, 'underworld_z.property', { fg = '#4fc1ff' })
   vim.api.nvim_set_hl(0, '@lsp.type.errorTag', { fg = '#b4206a' })
   vim.api.nvim_set_hl(0, '@lsp.type.function', { fg = '#76eaff' })
+  vim.api.nvim_set_hl(0, 'underworld_z.static_method', { fg = '#76eaff' })
   vim.api.nvim_set_hl(0, '@lsp.type.method', { fg = '#efcf90' })
-  vim.api.nvim_set_hl(0, '@function.method', { fg = '#dfaf7a' })
-  vim.api.nvim_set_hl(0, '@function.call', { fg = '#dfaf7a' })
+  vim.api.nvim_set_hl(0, '@function.method', { fg = '#efcf90' })
+  vim.api.nvim_set_hl(0, '@function.call', { fg = '#efcf90' })
   vim.api.nvim_set_hl(0, '@lsp.type.string', { fg = '#cd9af7' })
   vim.api.nvim_set_hl(0, '@lsp.type.number', { fg = '#ec4a90' })
   vim.api.nvim_set_hl(0, '@number', { fg = '#ec4a90' })
   vim.api.nvim_set_hl(0, '@lsp.type.variable', { fg = '#d491bd' })
   vim.api.nvim_set_hl(0, '@variable', { fg = '#d491bd' })
   vim.api.nvim_set_hl(0, '@lsp.type.interface', { fg = '#efbf90' })
+  vim.api.nvim_set_hl(0, 'underworld_z.interface', { link = '@lsp.type.interface' })
   vim.api.nvim_set_hl(0, '@string', { fg = '#cd9af7' })
   vim.api.nvim_set_hl(0, '@character', { fg = '#cd9af7' })
   vim.api.nvim_set_hl(0, 'Type', { fg = '#5ad1b3' })
+  vim.api.nvim_set_hl(0, 'underworld_z.class', { link = 'Type' })
+  vim.api.nvim_set_hl(0, 'underworld_z.struct', { fg = '#1ad78c' })
   vim.api.nvim_set_hl(0, '@attribute', { fg = '#5ad1b3' })
+  vim.api.nvim_set_hl(0, '@constructor', { fg = '#5ad1b3' })
   vim.api.nvim_set_hl(0, '@operator', { fg = '#b9b9b9' })
   -- vim.api.nvim_set_hl(0, '@lsp.type.keyword.zig', { fg = 'none' })
 
   -- background
   vim.api.nvim_set_hl(0, 'Normal', { bg = '#140014' })
   vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#140014' })
+
+  -- the "exceptions"
+  vim.api.nvim_create_autocmd('LspTokenUpdate', {
+    callback = function(args)
+      local token = args.data.token
+      if token.type == 'typeParameter' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.typeparam', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'interface' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.interface', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'class' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.class', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'parameter' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.parameter', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'property' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.property', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'method' and token.modifiers.static then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static_method', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      -- TODO: figure out how to determine file types for this
+      if token.type == 'struct' and args.data.token.filetype == 'cs' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.struct', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+    end,
+  })
 end
 
 return M
