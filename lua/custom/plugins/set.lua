@@ -5,8 +5,6 @@ vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
-vim.opt.smartindent = true
-
 vim.opt.wrap = false
 
 vim.opt.swapfile = false
@@ -22,5 +20,8 @@ vim.opt.signcolumn = 'yes'
 vim.opt.isfname:append '@-@'
 
 vim.opt.updatetime = 50
+
+vim.cmd [[ set cindent ]]
+vim.cmd [[ set cinwords+=struct,fn,defer,errdefer ]]
 
 return {}
