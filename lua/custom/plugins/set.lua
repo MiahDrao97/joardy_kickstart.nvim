@@ -21,7 +21,4 @@ vim.opt.isfname:append '@-@'
 
 vim.opt.updatetime = 50
 
-vim.cmd [[ set cindent ]]
-vim.cmd [[ set cinwords+=struct,fn,defer,errdefer ]]
-
 return {}
