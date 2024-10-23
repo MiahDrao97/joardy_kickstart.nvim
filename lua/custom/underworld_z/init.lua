@@ -6,6 +6,7 @@ M.descend_to_the_underworld = function()
 
   vim.api.nvim_set_hl(0, '@boolean', { fg = '#3070b4' })
   vim.api.nvim_set_hl(0, '@keyword', { fg = '#3070b4' })
+  vim.api.nvim_set_hl(0, '@constant.builtin', { fg = '#3070b4' })
   vim.api.nvim_set_hl(0, '@type.builtin', { fg = '#3070b4' })
   vim.api.nvim_set_hl(0, '@variable.builtin', { fg = '#3070b4' })
   vim.api.nvim_set_hl(0, '@keyword.operator', { fg = '#3070b4' })
