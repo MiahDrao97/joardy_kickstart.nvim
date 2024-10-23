@@ -633,7 +633,7 @@ require('lazy').setup({
         },
         csharp_ls = {},
         zls = {
-          cmd = { '/git/zls/zig-out/bin/zls.exe' },
+          cmd = { 'zls' }, -- Imma just assume I've put zls.exe in PATH
           filetypes = { 'zig', 'zon' },
         },
       }
