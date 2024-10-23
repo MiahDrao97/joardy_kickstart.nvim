@@ -70,3 +70,13 @@
  "opaque"
  ] @keyword
 
+[
+ "{"
+ "}"
+ "["
+ "]"
+ "("
+ ")"
+ "|"
+ ] @punctuation.bracket
+
