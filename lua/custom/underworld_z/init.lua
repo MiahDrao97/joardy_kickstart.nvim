@@ -25,9 +25,11 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, 'MiniStatuslineModeVisual', { fg = '#000000', bg = '#cb9af7' })
   vim.api.nvim_set_hl(0, '@function.builtin', { fg = '#af7b48' })
   vim.api.nvim_set_hl(0, '@keyword.import', { fg = '#af7b48' })
+  vim.api.nvim_set_hl(0, '@keyword.import.c_sharp', { link = '@keyword' }) -- link to keyword for c# (just 'using' kw)
   vim.api.nvim_set_hl(0, '@keyword.directive', { fg = '#af7b48' })
   vim.api.nvim_set_hl(0, '@lsp.type.builtin.zig', { fg = '#af7b48' })
   vim.api.nvim_set_hl(0, '@module', { fg = '#cdcdcd' })
+  vim.api.nvim_set_hl(0, 'underworld_z.namespace', { link = '@module' })
   vim.api.nvim_set_hl(0, '@variable.parameter', { fg = '#cb9af7' })
   vim.api.nvim_set_hl(0, 'underworld_z.parameter', { fg = '#cb9af7' })
   vim.api.nvim_set_hl(0, '@lsp.type.enumMember', { fg = '#4fc1ff' })
@@ -41,15 +43,16 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@lsp.type.method', { fg = '#e0cf90' })
   vim.api.nvim_set_hl(0, '@function.method', { fg = '#e0cf90' })
   vim.api.nvim_set_hl(0, '@function.call', { fg = '#e0cf90' })
-  vim.api.nvim_set_hl(0, '@lsp.type.string', { fg = '#cd9af7' })
+  vim.api.nvim_set_hl(0, '@lsp.type.string', { fg = '#c68f78' })
   vim.api.nvim_set_hl(0, '@lsp.type.number', { fg = '#ec4a90' })
   vim.api.nvim_set_hl(0, '@number', { fg = '#ec4a90' })
   vim.api.nvim_set_hl(0, '@lsp.type.variable', { fg = '#d491bd' })
   vim.api.nvim_set_hl(0, '@variable', { fg = '#d491bd' })
   vim.api.nvim_set_hl(0, '@lsp.type.interface', { fg = '#eab57a' })
   vim.api.nvim_set_hl(0, 'underworld_z.interface', { link = '@lsp.type.interface' })
-  vim.api.nvim_set_hl(0, '@string', { fg = '#cd9af7' })
-  vim.api.nvim_set_hl(0, '@character', { fg = '#cd9af7' })
+  vim.api.nvim_set_hl(0, '@string', { fg = '#c68f78' })
+  vim.api.nvim_set_hl(0, '@string.escape', { fg = '#76eaff' })
+  vim.api.nvim_set_hl(0, '@character', { fg = '#c68f78' })
   vim.api.nvim_set_hl(0, 'Type', { fg = '#5ad1b3' })
   vim.api.nvim_set_hl(0, 'underworld_z.class', { link = 'Type' })
   vim.api.nvim_set_hl(0, 'underworld_z.struct', { fg = '#80df80' })
@@ -60,8 +63,8 @@ M.descend_to_the_underworld = function()
   -- vim.api.nvim_set_hl(0, '@lsp.type.keyword.zig', { fg = 'none' })
 
   -- background
-  vim.api.nvim_set_hl(0, 'Normal', { bg = '#140014' })
-  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#140014' })
+  vim.api.nvim_set_hl(0, 'Normal', { bg = '#1a001a' })
+  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#1a001a' })
 
   -- the "exceptions"
   vim.api.nvim_create_autocmd('LspTokenUpdate', {
@@ -104,6 +107,11 @@ M.descend_to_the_underworld = function()
       end
       if token.type == 'enum' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.enum', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'namespace' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.namespace', {
           priority = 128, -- this puts it right at the top
         })
       end
