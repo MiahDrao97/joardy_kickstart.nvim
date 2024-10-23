@@ -53,6 +53,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, 'Type', { fg = '#5ad1b3' })
   vim.api.nvim_set_hl(0, 'underworld_z.class', { link = 'Type' })
   vim.api.nvim_set_hl(0, 'underworld_z.struct', { fg = '#80df80' })
+  vim.api.nvim_set_hl(0, 'underworld_z.enum', { fg = '#e15ac1' })
   vim.api.nvim_set_hl(0, '@attribute', { fg = '#5ad1b3' })
   vim.api.nvim_set_hl(0, '@constructor', { fg = '#5ad1b3' })
   vim.api.nvim_set_hl(0, '@operator', { fg = '#b9b9b9' })
@@ -96,9 +97,13 @@ M.descend_to_the_underworld = function()
           priority = 128, -- this puts it right at the top
         })
       end
-      -- TODO: figure out how to determine file types for this
       if token.type == 'struct' and vim.bo.filetype == 'cs' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.struct', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'enum' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.enum', {
           priority = 128, -- this puts it right at the top
         })
       end
