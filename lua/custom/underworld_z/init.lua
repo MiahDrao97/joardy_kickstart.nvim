@@ -113,7 +113,7 @@ M.descend_to_the_underworld = function()
           priority = 128, -- this puts it right at the top
         })
       end
-      if token.type == 'enumMember' then
+      if token.type == 'enumMember' and vim.bo.filetype == 'cs' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.enumMember', {
           priority = 128, -- this puts it right at the top
         })
