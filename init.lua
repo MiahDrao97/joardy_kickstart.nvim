@@ -632,13 +632,6 @@ require('lazy').setup({
           },
         },
         csharp_ls = {},
-        zls = {
-          cmd = { 'zls' }, -- Imma just assume I've put zls.exe in PATH
-          filetypes = { 'zig', 'zon' },
-          settings = {
-            format_on_save = false,
-          },
-        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -668,7 +661,12 @@ require('lazy').setup({
             require('lspconfig')[server_name].setup(server)
           end,
         },
+        automatic_installation = false,
       }
+
+      -- omg, it was defaulting back to the mason-installed zls
+      -- we're just assuming zls.exe is added to PATH
+      require('lspconfig').zls.setup {}
     end,
   },
 
@@ -970,6 +968,8 @@ require('lazy').setup({
 require('custom.underworld_z').descend_to_the_underworld()
 -- final touch to prevent zig files from being fmt'ed on save
 vim.g.zig_fmt_autosave = 0
+vim.g.enable_build_on_save = 1
+vim.g.build_on_save_step = 'check'
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
