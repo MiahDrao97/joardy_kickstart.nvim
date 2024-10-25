@@ -2,33 +2,37 @@ local M = {}
 
 local colors = {
   ctrl_flow_pink = '#ec4a90',
-  dark_blue = '#306baa',
+  dark_blue = '#406aa6',
   eyesore_pink = '#e15ac1',
   cmd_mode_orange = '#cfaf60',
-  violet = '#cb9ffa',
+  violet = '#db8bfa',
   macro_orange = '#c28f58',
-  namespace_white = '#cdcdcd',
+  namespace_white = '#bababa',
   bracket_grey = '#6a7899',
   operator_white = '#b9b9b9',
-  static_periwinkle = '#66e2ff',
-  prop_blue_grey = '#84a8cf',
-  param_blue = '#4aa9f0',
+  static_periwinkle = '#56e8ff',
+  variable_periwinkle = '#a0e2ff',
+  variable_pink_grey = '#984d88',
+  variable_blue_grey = '#4d728a',
+  prop_blue_grey = '#7d76a2',
+  param_blue = '#4aa9e8',
   err_tag_maroon = '#b4206a',
   method_orange = '#e0cf90',
   interface_orange = '#eab57a',
   string_rusty_orange = '#cb8b78',
+  string_dusty_lavender = '#dbb6fa',
   string_escape_yellow = '#ffe890',
   variable_pink = '#d491bd',
-  struct_class_green = '#5ad1b3',
-  struct_green = '#70ca70',
-  comment_grey = '#565f89',
+  struct_class_green = '#5adab3',
+  struct_green = '#84e488',
+  comment_grey = '#4d5679',
 }
 
 M.descend_to_the_underworld = function()
   -- we're giving treesitter the edge here
   vim.highlight.priorities.treesitter = 126
 
-  vim.api.nvim_set_hl(0, '@boolean', { link = '@keyword' })
+  vim.api.nvim_set_hl(0, '@boolean', { link = '@constant.builtin' })
   vim.api.nvim_set_hl(0, '@keyword', { fg = colors.dark_blue })
   vim.api.nvim_set_hl(0, '@constant.builtin', { link = '@keyword' })
   vim.api.nvim_set_hl(0, '@type.builtin', { fg = colors.violet })
@@ -67,6 +71,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@lsp.type.errorTag', { fg = colors.err_tag_maroon })
   vim.api.nvim_set_hl(0, '@lsp.type.function', { fg = colors.static_periwinkle })
   vim.api.nvim_set_hl(0, 'underworld_z.static', { fg = colors.static_periwinkle })
+  vim.api.nvim_set_hl(0, 'underworld_z.method', { link = '@function.method' })
   vim.api.nvim_set_hl(0, '@lsp.type.method', { link = '@function.method' })
   vim.api.nvim_set_hl(0, '@function.method', { fg = colors.method_orange })
   vim.api.nvim_set_hl(0, '@function.call', { fg = colors.method_orange })
@@ -74,7 +79,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@lsp.type.number', { link = '@number' })
   vim.api.nvim_set_hl(0, '@number', { fg = colors.ctrl_flow_pink })
   vim.api.nvim_set_hl(0, '@lsp.type.variable', { link = '@variable' })
-  vim.api.nvim_set_hl(0, '@variable', { fg = colors.variable_pink })
+  vim.api.nvim_set_hl(0, '@variable', { fg = colors.variable_periwinkle })
   vim.api.nvim_set_hl(0, '@lsp.type.interface', { fg = colors.interface_orange })
   vim.api.nvim_set_hl(0, 'underworld_z.interface', { link = '@lsp.type.interface' })
   vim.api.nvim_set_hl(0, '@string', { fg = colors.string_rusty_orange })
@@ -84,15 +89,16 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, 'underworld_z.class', { link = 'Type' })
   vim.api.nvim_set_hl(0, 'underworld_z.struct', { fg = colors.struct_green })
   vim.api.nvim_set_hl(0, 'underworld_z.enum', { fg = colors.violet })
-  vim.api.nvim_set_hl(0, 'underworld_z.enumMember', { fg = colors.static_periwinkle })
+  vim.api.nvim_set_hl(0, 'underworld_z.enumMember', { link = '@lsp.type.enumMember' })
   vim.api.nvim_set_hl(0, '@attribute', { link = 'Type' })
   vim.api.nvim_set_hl(0, '@constructor', { link = 'Type' })
   vim.api.nvim_set_hl(0, '@operator', { fg = colors.operator_white })
   vim.api.nvim_set_hl(0, '@constant', { fg = colors.param_blue })
+  vim.api.nvim_set_hl(0, '@comment', { fg = colors.comment_grey })
 
   -- background
-  vim.api.nvim_set_hl(0, 'Normal', { bg = '#1a001a' })
-  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#1a001a' })
+  vim.api.nvim_set_hl(0, 'Normal', { bg = '#160022' })
+  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#160022' })
 
   -- the "exceptions"
   vim.api.nvim_create_autocmd('LspTokenUpdate', {
@@ -125,6 +131,11 @@ M.descend_to_the_underworld = function()
       end
       if token.type == 'method' and token.modifiers.static then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'method' and not token.modifiers.static then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.method', {
           priority = 128, -- this puts it right at the top
         })
       end
