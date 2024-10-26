@@ -80,3 +80,16 @@
  "|"
  ] @punctuation.bracket
 
+[
+ ".*"
+ "&"
+ ".."
+ "=="
+ ] @punctuation.operator.reference
+
+[
+ "?"
+ ".?"
+ "!"
+ "!="
+ ] @punctuation.operator.optional

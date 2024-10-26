@@ -7,14 +7,14 @@ local colors = {
   cmd_mode_orange = '#cfaf60',
   violet = '#db8bfa',
   macro_orange = '#c28f58',
-  namespace_white = '#bababa',
+  namespace_white = '#babac2',
   bracket_grey = '#6a7899',
   operator_white = '#b9b9b9',
   static_periwinkle = '#56e8ff',
   variable_periwinkle = '#a0e2ff',
   variable_pink_grey = '#984d88',
   variable_blue_grey = '#4d728a',
-  prop_blue_grey = '#7d76a2',
+  prop_blue_grey = '#7d76b2',
   param_blue = '#4aa9e8',
   err_tag_maroon = '#b4206a',
   method_orange = '#e0cf90',
@@ -26,6 +26,8 @@ local colors = {
   struct_class_green = '#5adab3',
   struct_green = '#84e488',
   comment_grey = '#4d5679',
+  eyesore_orange = '#ff9e64',
+  reference_orange = '#eab58a',
 }
 
 M.descend_to_the_underworld = function()
@@ -95,6 +97,8 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@operator', { fg = colors.operator_white })
   vim.api.nvim_set_hl(0, '@constant', { fg = colors.param_blue })
   vim.api.nvim_set_hl(0, '@comment', { fg = colors.comment_grey })
+  vim.api.nvim_set_hl(0, '@punctuation.operator.reference', { fg = colors.reference_orange })
+  vim.api.nvim_set_hl(0, '@punctuation.operator.optional', { fg = colors.err_tag_maroon })
 
   -- background
   vim.api.nvim_set_hl(0, 'Normal', { bg = '#160022' })
