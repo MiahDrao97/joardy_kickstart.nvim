@@ -10,7 +10,7 @@
  )
 
 (
- (enum_declaration)
+ (enum_declaration) @indent.begin
  )
 
 (

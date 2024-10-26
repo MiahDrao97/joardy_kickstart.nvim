@@ -87,9 +87,14 @@
  "=="
  ] @punctuation.operator.reference
 
+("*") @punctuation.ptr
+
 [
  "?"
  ".?"
+ ] @punctuation.operator.optional
+
+[
  "!"
  "!="
- ] @punctuation.operator.optional
+ ] @punctuation.operator.error

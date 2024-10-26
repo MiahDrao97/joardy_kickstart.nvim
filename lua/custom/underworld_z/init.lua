@@ -3,11 +3,11 @@ local M = {}
 local colors = {
   ctrl_flow_pink = '#ec4a90',
   dark_blue = '#406aa6',
-  eyesore_pink = '#e15ac1',
+  eyesore_pink = '#f15ad1',
   cmd_mode_orange = '#cfaf60',
   violet = '#db8bfa',
   macro_orange = '#c28f58',
-  namespace_white = '#babac2',
+  namespace_white = '#c4c4d2',
   bracket_grey = '#6a7899',
   operator_white = '#b9b9b9',
   static_periwinkle = '#56e8ff',
@@ -27,7 +27,7 @@ local colors = {
   struct_green = '#84e488',
   comment_grey = '#4d5679',
   eyesore_orange = '#ff9e64',
-  reference_orange = '#eab58a',
+  reference_orange = '#f6b684',
 }
 
 M.descend_to_the_underworld = function()
@@ -92,13 +92,17 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, 'underworld_z.struct', { fg = colors.struct_green })
   vim.api.nvim_set_hl(0, 'underworld_z.enum', { fg = colors.violet })
   vim.api.nvim_set_hl(0, 'underworld_z.enumMember', { link = '@lsp.type.enumMember' })
+  vim.api.nvim_set_hl(0, 'underworld_z.delegate', { fg = colors.eyesore_pink })
+  vim.api.nvim_set_hl(0, 'underworld_z.extn_method', { fg = colors.variable_pink })
   vim.api.nvim_set_hl(0, '@attribute', { link = 'Type' })
   vim.api.nvim_set_hl(0, '@constructor', { link = 'Type' })
   vim.api.nvim_set_hl(0, '@operator', { fg = colors.operator_white })
   vim.api.nvim_set_hl(0, '@constant', { fg = colors.param_blue })
   vim.api.nvim_set_hl(0, '@comment', { fg = colors.comment_grey })
   vim.api.nvim_set_hl(0, '@punctuation.operator.reference', { fg = colors.reference_orange })
-  vim.api.nvim_set_hl(0, '@punctuation.operator.optional', { fg = colors.err_tag_maroon })
+  vim.api.nvim_set_hl(0, '@punctuation.operator.optional', { fg = colors.prop_blue_grey })
+  vim.api.nvim_set_hl(0, '@punctuation.operator.error', { fg = colors.err_tag_maroon })
+  vim.api.nvim_set_hl(0, '@punctuation.ptr', { fg = colors.namespace_white })
 
   -- background
   vim.api.nvim_set_hl(0, 'Normal', { bg = '#160022' })
@@ -166,6 +170,16 @@ M.descend_to_the_underworld = function()
       if token.type == 'namespace' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.namespace', {
           priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'delegateName' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.delegate', {
+          priority = 129, -- this puts it right at the top
+        })
+      end
+      if token.type == 'extensionMethodName' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.extn_method', {
+          priority = 129, -- this puts it right at the top
         })
       end
     end,
