@@ -1,4 +1,6 @@
-; keywords
+;; inherits: zig
+;; extends
+
 [
  "defer"
  "errdefer"

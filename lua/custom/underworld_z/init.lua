@@ -54,8 +54,8 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, 'MiniStatuslineModeCommand', { fg = '#000000', bg = colors.cmd_mode_orange })
   vim.api.nvim_set_hl(0, 'MiniStatuslineModeVisual', { fg = '#000000', bg = colors.violet })
   vim.api.nvim_set_hl(0, '@function.builtin', { fg = colors.macro_orange })
-  vim.api.nvim_set_hl(0, '@keyword.import', { fg = colors.macro_orange })
-  vim.api.nvim_set_hl(0, '@keyword.import.c_sharp', { link = '@keyword' }) -- link to keyword for c# (just 'using' kw)
+  vim.api.nvim_set_hl(0, '@keyword.import', { link = '@keyword' })
+  vim.api.nvim_set_hl(0, '@keyword.import.zig', { fg = colors.macro_orange }) -- link to keyword for c# (just 'using' kw)
   vim.api.nvim_set_hl(0, '@keyword.directive', { fg = colors.macro_orange })
   vim.api.nvim_set_hl(0, '@lsp.type.builtin.zig', { fg = colors.macro_orange })
   vim.api.nvim_set_hl(0, '@module', { fg = colors.namespace_white })
@@ -94,6 +94,8 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, 'underworld_z.enumMember', { link = '@lsp.type.enumMember' })
   vim.api.nvim_set_hl(0, 'underworld_z.delegate', { fg = colors.eyesore_pink })
   vim.api.nvim_set_hl(0, 'underworld_z.extn_method', { fg = colors.variable_pink })
+  vim.api.nvim_set_hl(0, 'underworld_z.type', { fg = colors.violet })
+  vim.api.nvim_set_hl(0, 'underworld_z.error', { fg = colors.err_tag_maroon })
   vim.api.nvim_set_hl(0, '@attribute', { link = 'Type' })
   vim.api.nvim_set_hl(0, '@constructor', { link = 'Type' })
   vim.api.nvim_set_hl(0, '@operator', { fg = colors.operator_white })
@@ -180,6 +182,21 @@ M.descend_to_the_underworld = function()
       if token.type == 'extensionMethodName' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.extn_method', {
           priority = 129, -- this puts it right at the top
+        })
+      end
+      if token.type == 'type' and vim.bo.filetype == 'zig' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.type', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'function' and vim.bo.filetype == 'zig' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'errorTag' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.error', {
+          priority = 128, -- this puts it right at the top
         })
       end
     end,
