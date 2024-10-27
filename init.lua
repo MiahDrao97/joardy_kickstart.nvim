@@ -611,7 +611,7 @@ require('lazy').setup({
               },
               keymaps = {
                 next_signature = '<A-n>',
-                previous_signature = '<A-p>',
+                previous_signature = '<C-k>',
                 next_parameter = '<C-l>',
                 previous_parameter = '<C-h>',
                 close_signature = '<A-s>',

@@ -102,7 +102,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@punctuation.operator.reference', { fg = colors.reference_orange })
   vim.api.nvim_set_hl(0, '@punctuation.operator.optional', { fg = colors.prop_blue_grey })
   vim.api.nvim_set_hl(0, '@punctuation.operator.error', { fg = colors.err_tag_maroon })
-  vim.api.nvim_set_hl(0, '@punctuation.ptr', { fg = colors.namespace_white })
+  vim.api.nvim_set_hl(0, '@punctuation.ptr', { fg = colors.prop_blue_grey })
 
   -- background
   vim.api.nvim_set_hl(0, 'Normal', { bg = '#160022' })
