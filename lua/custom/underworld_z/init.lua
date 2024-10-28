@@ -68,6 +68,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@lsp.type.enumMember', { fg = colors.param_blue })
   vim.api.nvim_set_hl(0, '@lsp.type.property', { link = '@property' })
   vim.api.nvim_set_hl(0, '@variable.member', { link = '@property' })
+  vim.api.nvim_set_hl(0, '@variable.capture', { fg = colors.reference_orange, italic = true })
   vim.api.nvim_set_hl(0, '@property', { fg = colors.prop_blue_grey })
   vim.api.nvim_set_hl(0, 'underworld_z.property', { link = '@property' })
   vim.api.nvim_set_hl(0, '@lsp.type.errorTag', { fg = colors.err_tag_maroon })
@@ -191,6 +192,11 @@ M.descend_to_the_underworld = function()
       end
       if token.type == 'function' and vim.bo.filetype == 'zig' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'struct' and vim.bo.filetype == 'zig' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.class', {
           priority = 128, -- this puts it right at the top
         })
       end

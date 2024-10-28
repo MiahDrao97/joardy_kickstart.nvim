@@ -101,6 +101,5 @@
  "!="
  ] @punctuation.operator.error
 
-(
- payload (identifier) @variable.capture
-)
+(payload
+  (identifier) @variable.capture)
