@@ -41,4 +41,7 @@ return {
   {
     'Issafalcon/lsp-overloads.nvim',
   },
+  {
+    'Hoffs/omnisharp-extended-lsp.nvim',
+  },
 }
