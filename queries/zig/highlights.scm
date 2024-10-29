@@ -87,19 +87,19 @@
  "&"
  ".."
  "=="
- ] @punctuation.operator.reference
+ ] @operator.reference
 
 ("*") @punctuation.ptr
 
 [
  "?"
  ".?"
- ] @punctuation.operator.optional
+ ] @operator.optional
 
 [
  "!"
  "!="
- ] @punctuation.operator.error
+ ] @operator.error
 
 (payload
   (identifier) @variable.capture)

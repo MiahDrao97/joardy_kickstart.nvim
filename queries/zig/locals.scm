@@ -1,3 +1,2 @@
-(for_statement
-    (payload (identifier) @local.definition)
-)
+(payload (identifier) @local.definition)
+
