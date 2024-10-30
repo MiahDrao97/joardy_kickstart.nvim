@@ -1,5 +1,5 @@
 ;; inherits: c_sharp
 ;; extends
 
-((identifier) @keyword (#any-eq? @keyword "nameof"))
+((identifier) @keyword (#any-of? @keyword "nameof" "_"))
 ("base") @keyword
