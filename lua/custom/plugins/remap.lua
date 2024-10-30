@@ -12,11 +12,59 @@ vim.keymap.set('i', '<C-c>', '<Esc>')
 vim.keymap.set('n', 'q', '<nop>')
 vim.keymap.set('i', '<C-m>', '<nop>')
 vim.keymap.set('n', '<C-s>', ':w<CR>')
+vim.keymap.set('n', '<leader>en', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<leader>ep', vim.diagnostic.goto_prev)
 
 vim.keymap.set('n', '<leader>y', '"+y')
 vim.keymap.set('v', '<leader>y', '"+y')
 vim.keymap.set('n', '<leader>Y', '"+Y')
 
 vim.keymap.set('n', '<leader>s', ':%s/\\<<C-r><C-w>\\>/<C-r><C-r><C-w>/gI<Left><Left><Left>')
+
+local add_xml_summary = function()
+  if vim.bo.filetype == 'cs' then
+    vim.cmd [[execute "normal O/// <summary>\<CR>\<CR></summary>\<ESC>kA "]]
+  else
+    vim.cmd [[ echo 'XML docs not configured for this filetype' ]]
+  end
+end
+
+local add_xml_remarks = function()
+  if vim.bo.filetype == 'cs' then
+    vim.cmd [[execute "normal O/// <remarks>\<CR>\<CR></remarks>\<ESC>kA "]]
+  else
+    vim.cmd [[ echo 'XML docs not configured for this filetype' ]]
+  end
+end
+
+local add_xml_inheritdoc = function()
+  if vim.bo.filetype == 'cs' then
+    vim.cmd [[execute "normal O/// <inheritdoc />"]]
+  else
+    vim.cmd [[ echo 'XML docs not configured for this filetype' ]]
+  end
+end
+
+local add_xml_inheritdoc_cref = function()
+  if vim.bo.filetype == 'cs' then
+    vim.cmd [[execute "normal O/// <inheritdoc cref=\"\" />\<ESC>bhh"]]
+  else
+    vim.cmd [[ echo 'XML docs not configured for this filetype' ]]
+  end
+end
+
+local add_xml_returns = function()
+  if vim.bo.filetype == 'cs' then
+    vim.cmd [[execute "normal O/// <returns></returns>\<ESC>bhh"]]
+  else
+    vim.cmd [[ echo 'XML docs not configured for this filetype' ]]
+  end
+end
+
+vim.keymap.set('n', '<leader>xs', add_xml_summary)
+vim.keymap.set('n', '<leader>xS', add_xml_remarks)
+vim.keymap.set('n', '<leader>xi', add_xml_inheritdoc)
+vim.keymap.set('n', '<leader>xI', add_xml_inheritdoc_cref)
+vim.keymap.set('n', '<leader>xz', add_xml_returns)
 
 return {}
