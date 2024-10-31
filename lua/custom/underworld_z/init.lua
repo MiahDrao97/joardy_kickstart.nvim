@@ -28,6 +28,7 @@ local colors = {
   comment_grey = '#4d5679',
   eyesore_orange = '#ff9e64',
   reference_orange = '#f6b684',
+  bkgd = '#160022',
 }
 
 M.descend_to_the_underworld = function()
@@ -109,8 +110,8 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@punctuation.ptr', { fg = colors.prop_blue_grey })
 
   -- background
-  vim.api.nvim_set_hl(0, 'Normal', { bg = '#160022' })
-  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#160022' })
+  vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
 
   -- the "exceptions"
   vim.api.nvim_create_autocmd('LspTokenUpdate', {
