@@ -102,4 +102,5 @@
  ] @operator.error
 
 (payload
-  (identifier) @variable.capture)
+  (identifier) @variable.capture
+)
