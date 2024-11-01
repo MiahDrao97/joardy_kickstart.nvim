@@ -611,12 +611,13 @@ require('lazy').setup({
               },
               keymaps = {
                 next_signature = '<A-n>',
-                previous_signature = '<C-k>',
-                next_parameter = '<C-l>',
-                previous_parameter = '<C-h>',
-                close_signature = '<A-s>',
+                previous_signature = '<A-p>',
+                next_parameter = '<A-l>',
+                previous_parameter = '<A-h>',
+                close_signature = '<A-e>',
               },
               display_automatically = true, -- Uses trigger characters to automatically display the signature overloads when typing a method signature
+              silent = false,
             })
           end
         end,
