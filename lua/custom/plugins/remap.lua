@@ -69,11 +69,20 @@ local complete_xml_param = function()
   end
 end
 
+local complete_xml_typeparam = function()
+  if vim.bo.filetype == 'cs' then
+    vim.cmd [[execute "normal i></typeparam>\<ESC>bhh"]]
+  else
+    vim.cmd [[ echo 'XML docs not configured for this filetype' ]]
+  end
+end
+
 vim.keymap.set('n', '<leader>xs', add_xml_summary)
 vim.keymap.set('n', '<leader>xS', add_xml_remarks)
 vim.keymap.set('n', '<leader>xi', add_xml_inheritdoc)
 vim.keymap.set('n', '<leader>xI', add_xml_inheritdoc_cref)
 vim.keymap.set('n', '<leader>xz', add_xml_returns)
 vim.keymap.set('i', '<C-x><C-p>', complete_xml_param)
+vim.keymap.set('i', '<C-x><C-t>', complete_xml_typeparam)
 
 return {}
