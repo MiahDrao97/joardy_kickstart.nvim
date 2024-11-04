@@ -181,12 +181,12 @@ M.descend_to_the_underworld = function()
       end
       if token.type == 'delegateName' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.delegate', {
-          priority = 129, -- this puts it right at the top
+          priority = 132, -- this puts it right at the top
         })
       end
       if token.type == 'extensionMethodName' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.extn_method', {
-          priority = 129, -- this puts it right at the top
+          priority = 132, -- this puts it right at the top
         })
       end
       if token.type == 'type' and vim.bo.filetype == 'zig' then
