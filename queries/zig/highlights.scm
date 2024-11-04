@@ -101,6 +101,11 @@
  "!="
  ] @operator.error
 
+((identifier) @variable.builtin
+  (#set! priority "128")
+  (#eq? @variable.builtin "_")
+)
+
 (payload
   ((identifier) @variable.capture_group)
 )
