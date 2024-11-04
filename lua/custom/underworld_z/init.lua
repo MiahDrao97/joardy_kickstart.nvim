@@ -70,11 +70,13 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@lsp.type.property', { link = '@property' })
   vim.api.nvim_set_hl(0, '@variable.member', { link = '@property' })
   vim.api.nvim_set_hl(0, '@variable.capture', { fg = colors.reference_orange, italic = true })
+  vim.api.nvim_set_hl(0, '@variable.capture_group', { fg = colors.reference_orange, italic = true })
+  vim.api.nvim_set_hl(0, '@variable.capture_use', { fg = colors.reference_orange, italic = true })
   vim.api.nvim_set_hl(0, '@property', { fg = colors.prop_blue_grey })
   vim.api.nvim_set_hl(0, 'underworld_z.property', { link = '@property' })
   vim.api.nvim_set_hl(0, '@lsp.type.errorTag', { fg = colors.err_tag_maroon })
   vim.api.nvim_set_hl(0, '@lsp.type.function', { fg = colors.static_periwinkle })
-  vim.api.nvim_set_hl(0, 'underworld_z.static', { fg = colors.static_periwinkle })
+  vim.api.nvim_set_hl(0, 'underworld_z.static', { fg = colors.static_periwinkle, italic = false })
   vim.api.nvim_set_hl(0, 'underworld_z.method', { link = '@function.method' })
   vim.api.nvim_set_hl(0, '@lsp.type.method', { link = '@function.method' })
   vim.api.nvim_set_hl(0, '@function.method', { fg = colors.method_orange })
@@ -144,12 +146,12 @@ M.descend_to_the_underworld = function()
       end
       if token.type == 'method' and token.modifiers.static then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static', {
-          priority = 128, -- this puts it right at the top
+          priority = 131, -- this puts it right at the top
         })
       end
       if token.type == 'method' and not token.modifiers.static then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.method', {
-          priority = 128, -- this puts it right at the top
+          priority = 131, -- this puts it right at the top
         })
       end
       if token.type == 'property' and token.modifiers.static then
@@ -189,12 +191,12 @@ M.descend_to_the_underworld = function()
       end
       if token.type == 'type' and vim.bo.filetype == 'zig' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.type', {
-          priority = 128, -- this puts it right at the top
+          priority = 131, -- this puts it right at the top
         })
       end
       if token.type == 'function' and vim.bo.filetype == 'zig' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static', {
-          priority = 128, -- this puts it right at the top
+          priority = 131, -- this puts it right at the top
         })
       end
       if token.type == 'struct' and vim.bo.filetype == 'zig' then

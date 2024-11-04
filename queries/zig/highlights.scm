@@ -102,5 +102,22 @@
  ] @operator.error
 
 (payload
-  (identifier) @variable.capture
+  ((identifier) @variable.capture_group)
+)
+
+(call_expression
+  function: (field_expression
+    (_)*
+    member: (identifier) @function.call (#set! priority "130")
+  )
+)
+
+(call_expression
+  function: (identifier) @function.call (#set! priority "130")
+)
+
+(call_expression
+  function: (error_union_type
+    ok: (identifier) @function.call (#set! priority "130")
+  )
 )

@@ -1,10 +1,7 @@
 ;; inherits: zig
 ;; extends
 
-(if_statement
-  (payload
+(payload
     ((identifier) @local.definition.parameter (#set! definition.parameter.scope "parent"))
   )
-)
 
-((block) @local.scope)
