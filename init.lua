@@ -397,7 +397,7 @@ require('lazy').setup({
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
-      pcall(require('telescope').load_extension, 'csharpls_extended')
+      pcall(require('telescope').load_extension, 'omnisharp_extended')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -619,6 +619,13 @@ require('lazy').setup({
               display_automatically = true, -- Uses trigger characters to automatically display the signature overloads when typing a method signature
               silent = false,
             })
+          end
+
+          if client and client.name == 'omnisharp' then
+            map('gd', require('omnisharp_extended').telescope_lsp_definition, 'Omnisharp: [G]oto [D]efinition')
+            map('gr', require('omnisharp_extended').telescope_lsp_references, 'Omnisharp: [G]oto [R]eferences')
+            map('gI', require('omnisharp_extended').telescope_lsp_implementation, 'Omnisharp: [G]oto [I]mplementation')
+            map('<leader>D', require('omnisharp_extended').telescope_lsp_type_definition, 'Omnisharp: Type [D]efinition')
           end
         end,
       })
