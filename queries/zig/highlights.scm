@@ -80,6 +80,8 @@
  "("
  ")"
  "|"
+ "=>"
+ "="
  ] @punctuation.bracket
 
 [
