@@ -5,7 +5,7 @@
 ("base") @keyword
 
 ((comment) @comment
-  (#lua-match? @comment "^/[*][*][^*].*[*]/$")
+  (#lua-match? @comment "^/[/][%*][^*].*[%*][/]/$")
   (#set! priority "132")
 )
 
