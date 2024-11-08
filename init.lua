@@ -670,7 +670,7 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
@@ -684,9 +684,15 @@ require('lazy').setup({
           },
         },
         -- csharp_ls is better for doc comments
-        csharp_ls = {},
+        csharp_ls = {
+          -- TODO: Figure out which extended lsp is better
+          --
+          --handlers = {
+          --  ['textDocument/definition'] = require('csharpls_extended').handler,
+          --  ['textDocument/typeDefinition'] = require('csharpls_extended').handler,
+          --},
+        },
       }
-
       -- Ensure the servers and tools above are installed
       --  To check the current status of installed tools and/or manually install
       --  other tools, you can run
