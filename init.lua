@@ -682,6 +682,9 @@ require('lazy').setup({
             ['textDocument/references'] = require('omnisharp_extended').references_handler,
             ['textDocument/implementation'] = require('omnisharp_extended').implementation_handler,
           },
+          enable_import_completion = true,
+          organize_imports_on_format = true,
+          enable_roslyn_analyzers = true,
         },
         -- csharp_ls is better for doc comments
         csharp_ls = {
