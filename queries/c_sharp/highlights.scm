@@ -14,9 +14,13 @@
  "??"
  "??="
  ":"
- "!"
  "="
  "=>"
  ".."
  "^"
- ] @operator.optional
+ ] @punctuation.bracket
+
+[
+ "!"
+ "!="
+ ] @operator.error
