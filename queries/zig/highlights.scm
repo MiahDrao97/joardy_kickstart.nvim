@@ -114,7 +114,7 @@
 
 (call_expression
   function: (field_expression
-    object: (identifier)
+    object: (_)+
     member: (identifier) @function.call (#set! priority "131")
   )
 )
