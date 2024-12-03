@@ -114,8 +114,14 @@
 
 (call_expression
   function: (field_expression
-    (_)*
-    member: (identifier) @function.call (#set! priority "130")
+    object: (identifier)
+    member: (identifier) @function.call (#set! priority "131")
+  )
+)
+
+(call_expression
+  function: (field_expression
+    member: (identifier) @function.declaration_literal (#set! priority "130")
   )
 )
 

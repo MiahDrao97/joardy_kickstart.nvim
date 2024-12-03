@@ -81,6 +81,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@lsp.type.method', { link = '@function.method' })
   vim.api.nvim_set_hl(0, '@function.method', { fg = colors.method_orange })
   vim.api.nvim_set_hl(0, '@function.call', { fg = colors.eyesore_pink })
+  vim.api.nvim_set_hl(0, '@function.declaration_literal', { fg = colors.static_periwinkle })
   vim.api.nvim_set_hl(0, '@lsp.type.string', { link = '@string' })
   vim.api.nvim_set_hl(0, '@lsp.type.number', { link = '@number' })
   vim.api.nvim_set_hl(0, '@number', { fg = colors.ctrl_flow_pink })
@@ -173,7 +174,7 @@ M.descend_to_the_underworld = function()
       end
       if token.type == 'enumMember' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.enumMember', {
-          priority = 132, -- this puts it right at the top
+          priority = 128, -- this puts it right at the top
         })
       end
       if token.type == 'namespace' then
