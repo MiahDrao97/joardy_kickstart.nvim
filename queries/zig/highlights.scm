@@ -79,16 +79,16 @@
  "]"
  "("
  ")"
- "|"
  "=>"
  "="
+ ".."
  ] @punctuation.bracket
 
 [
  ".*"
  "&"
- ".."
  "=="
+ "|"
  ] @operator.reference
 
 ("*") @punctuation.ptr
