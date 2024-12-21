@@ -55,6 +55,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, 'MiniStatuslineModeCommand', { fg = '#000000', bg = colors.cmd_mode_orange })
   vim.api.nvim_set_hl(0, 'MiniStatuslineModeVisual', { fg = '#000000', bg = colors.violet })
   vim.api.nvim_set_hl(0, '@function.builtin', { fg = colors.macro_orange })
+  vim.api.nvim_set_hl(0, '@function.macro', { fg = colors.macro_orange })
   vim.api.nvim_set_hl(0, '@keyword.import', { link = '@keyword' })
   vim.api.nvim_set_hl(0, '@keyword.import.zig', { fg = colors.macro_orange }) -- link to keyword for c# (just 'using' kw)
   vim.api.nvim_set_hl(0, '@keyword.directive', { fg = colors.eyesore_orange })
@@ -103,6 +104,8 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, 'underworld_z.type', { fg = colors.violet })
   vim.api.nvim_set_hl(0, 'underworld_z.error', { fg = colors.err_tag_maroon })
   vim.api.nvim_set_hl(0, 'underworld_z.preprocessorText', { fg = colors.reference_orange })
+  vim.api.nvim_set_hl(0, 'underworld_z.mutable', { link = '@variable' })
+  vim.api.nvim_set_hl(0, 'underworld_z.macro', { link = '@function.macro' })
   vim.api.nvim_set_hl(0, '@attribute', { link = 'Type' })
   vim.api.nvim_set_hl(0, '@constructor', { link = 'Type' })
   vim.api.nvim_set_hl(0, '@operator', { fg = colors.operator_white })
@@ -113,6 +116,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@operator.optional', { fg = colors.bracket_grey })
   vim.api.nvim_set_hl(0, '@operator.error', { fg = colors.err_tag_maroon })
   vim.api.nvim_set_hl(0, '@punctuation.ptr', { fg = colors.bracket_grey })
+  vim.api.nvim_set_hl(0, '@lsp.typemod.typealias.defaultLibrary.rust', { link = '@lsp.typemod.typeAlias' })
 
   -- background
   vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
@@ -143,9 +147,15 @@ M.descend_to_the_underworld = function()
         })
       end
       if token.type == 'property' and not token.modifiers.static then
-        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.property', {
-          priority = 128, -- this puts it right at the top
-        })
+        if vim.bo.filetype == 'rust' then
+          vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.enumMember', {
+            priority = 128, -- this puts it right at the top
+          })
+        else
+          vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.property', {
+            priority = 128, -- this puts it right at the top
+          })
+        end
       end
       if token.type == 'method' and token.modifiers.static then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static', {
@@ -197,7 +207,7 @@ M.descend_to_the_underworld = function()
           priority = 131, -- this puts it right at the top
         })
       end
-      if token.type == 'function' and vim.bo.filetype == 'zig' then
+      if token.type == 'function' and (vim.bo.filetype == 'zig' or vim.bo.filetype == 'rust') then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static', {
           priority = 131, -- this puts it right at the top
         })
@@ -214,6 +224,42 @@ M.descend_to_the_underworld = function()
       end
       if token.type == 'preprocessorText' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.preprocessorText', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'selfTypeKeyword' and vim.bo.filetype == 'rust' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.class', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'typeAlias' and vim.bo.filetype == 'rust' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.class', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if (token.type == 'variable' or token.type == 'parameter') and vim.bo.filetype == 'rust' then
+        if token.modifiers.mutable then
+          vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.mutable', {
+            priority = 131, -- this puts it right at the top
+          })
+        else
+          vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.property', {
+            priority = 131, -- this puts it right at the top
+          })
+        end
+      end
+      if token.type == 'macro' and vim.bo.filetype == 'rust' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.macro', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'decorator' and vim.bo.filetype == 'rust' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.struct', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'lifetime' and vim.bo.filetype == 'rust' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static', {
           priority = 128, -- this puts it right at the top
         })
       end
