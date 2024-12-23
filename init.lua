@@ -636,6 +636,8 @@ require('lazy').setup({
       --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+      capabilities.textDocument.completion.completionItem.snippetSupport = true
+      capabilities.textDocument.completion.completionItem.commitCharactersSupport = true
 
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -682,9 +684,49 @@ require('lazy').setup({
             ['textDocument/references'] = require('omnisharp_extended').references_handler,
             ['textDocument/implementation'] = require('omnisharp_extended').implementation_handler,
           },
-          enable_import_completion = true,
-          organize_imports_on_format = true,
           enable_roslyn_analyzers = true,
+          organize_imports_on_format = true,
+          enable_import_completion = true,
+          capabilities = capabilities,
+          settings = {
+            FormattingOptions = {
+              -- Enables support for reading code style, naming convention and analyzer
+              -- settings from .editorconfig.
+              EnableEditorConfigSupport = true,
+              -- Specifies whether 'using' directives should be grouped and sorted during
+              -- document formatting.
+              OrganizeImports = true,
+            },
+            RoslynExtensionsOptions = {
+              -- Enables support for roslyn analyzers, code fixes and rulesets.
+              EnableAnalyzersSupport = true,
+              -- Enables support for showing unimported types and unimported extension
+              -- methods in completion lists. When committed, the appropriate using
+              -- directive will be added at the top of the current file. This option can
+              -- have a negative impact on initial completion responsiveness,
+              -- particularly for the first few completion sessions after opening a
+              -- solution.
+              EnableImportCompletion = true,
+              -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
+              -- true
+              AnalyzeOpenDocumentsOnly = true,
+              EnableDecompilationSupport = true,
+              InlayHintsOptions = {
+                EnableForParameters = true,
+                ForLiteralParameters = true,
+                ForIndexerParameters = true,
+                ForObjectCreationParameters = true,
+                ForOtherParameters = true,
+                SuppressForParametersThatDifferOnlyBySuffix = false,
+                SuppressForParametersThatMatchMethodIntent = false,
+                SuppressForParametersThatMatchArgumentName = false,
+                EnableForTypes = true,
+                ForImplicitVariableTypes = true,
+                ForLambdaParameterTypes = true,
+                ForImplicitObjectCreation = true,
+              },
+            },
+          },
         },
         -- csharp_ls is better for doc comments
         csharp_ls = {
