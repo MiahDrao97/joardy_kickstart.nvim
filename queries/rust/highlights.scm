@@ -5,8 +5,6 @@
  "*"
  "&"
  "=="
- "+"
- "-"
  ] @operator.reference
 
 [
