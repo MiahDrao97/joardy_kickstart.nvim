@@ -268,6 +268,11 @@ M.descend_to_the_underworld = function()
           priority = 128, -- this puts it right at the top
         })
       end
+      if token.type == 'derive' and vim.bo.filetype == 'rust' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.interface', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
     end,
   })
 end
