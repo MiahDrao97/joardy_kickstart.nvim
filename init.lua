@@ -497,137 +497,139 @@ require('lazy').setup({
       --    That is to say, every time a new file is opened that is associated with
       --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
       --    function will be executed to configure the current buffer
+      local on_attach = function(event)
+        -- NOTE: Remember that Lua is a real programming language, and as such it is possible
+        -- to define small helper and utility functions so you don't have to repeat yourself.
+        --
+        -- In this case, we create a function that lets us more easily define mappings specific
+        -- for LSP related items. It sets the mode, buffer and description for us each time.
+        local map = function(keys, func, desc, mode)
+          mode = mode or 'n'
+          vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+        end
+
+        -- Jump to the definition of the word under your cursor.
+        --  This is where a variable was first declared, or where a function is defined, etc.
+        --  To jump back, press <C-t>.
+        map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+
+        -- Find references for the word under your cursor.
+        map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+
+        -- Jump to the implementation of the word under your cursor.
+        --  Useful when your language has ways of declaring types without an actual implementation.
+        map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+
+        -- Jump to the type of the word under your cursor.
+        --  Useful when you're not sure what type a variable is and you want to see
+        --  the definition of its *type*, not where it was *defined*.
+        map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
+
+        -- Fuzzy find all the symbols in your current document.
+        --  Symbols are things like variables, functions, types, etc.
+        map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+
+        -- Fuzzy find all the symbols in your current workspace.
+        --  Similar to document symbols, except searches over your entire project.
+        map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+
+        -- Rename the variable under your cursor.
+        --  Most Language Servers support renaming across files, etc.
+        map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+
+        -- Execute a code action, usually your cursor needs to be on top of an error
+        -- or a suggestion from your LSP for this to activate.
+        map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+
+        -- WARN: This is not Goto Definition, this is Goto Declaration.
+        --  For example, in C this would take you to the header.
+        map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+        -- The following two autocommands are used to highlight references of the
+        -- word under your cursor when your cursor rests there for a little while.
+        --    See `:help CursorHold` for information about when this is executed
+        --
+        -- When you move your cursor, the highlights will be cleared (the second autocommand).
+        local client = vim.lsp.get_client_by_id(event.data.client_id)
+        if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+          local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
+          vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+            buffer = event.buf,
+            group = highlight_augroup,
+            callback = vim.lsp.buf.document_highlight,
+          })
+
+          vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+            buffer = event.buf,
+            group = highlight_augroup,
+            callback = vim.lsp.buf.clear_references,
+          })
+
+          vim.api.nvim_create_autocmd('LspDetach', {
+            group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+            callback = function(event2)
+              vim.lsp.buf.clear_references()
+              vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+            end,
+          })
+        end
+
+        -- The following code creates a keymap to toggle inlay hints in your
+        -- code, if the language server you are using supports them
+        --
+        -- This may be unwanted, since they displace some of your code
+        if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+          map('<leader>th', function()
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+          end, '[T]oggle Inlay [H]ints')
+        end
+
+        if client and client.server_capabilities.signatureHelpProvider then
+          require('lsp-overloads').setup(client, {
+            -- UI options are mostly the same as those passed to vim.lsp.util.open_floating_preview
+            ui = {
+              border = 'single', -- The border to use for the signature popup window. Accepts same border values as |nvim_open_win()|.
+              height = nil, -- Height of the signature popup window (nil allows dynamic sizing based on content of the help)
+              width = nil, -- Width of the signature popup window (nil allows dynamic sizing based on content of the help)
+              wrap = true, -- Wrap long lines
+              wrap_at = nil, -- Character to wrap at for computing height when wrap enabled
+              max_width = nil, -- Maximum signature popup width
+              max_height = nil, -- Maximum signature popup height
+              -- Events that will close the signature popup window: use {"CursorMoved", "CursorMovedI", "InsertCharPre"} to hide the window when typing
+              close_events = { 'CursorMoved', 'BufHidden', 'InsertLeave' },
+              focusable = true, -- Make the popup float focusable
+              focus = false, -- If focusable is also true, and this is set to true, navigating through overloads will focus into the popup window (probably not what you want)
+              offset_x = 0, -- Horizontal offset of the floating window relative to the cursor position
+              offset_y = 0, -- Vertical offset of the floating window relative to the cursor position
+              floating_window_above_cur_line = false, -- Attempt to float the popup above the cursor position
+              -- (note, if the height of the float would be greater than the space left above the cursor, it will default
+              -- to placing the float below the cursor. The max_height option allows for finer tuning of this)
+              silent = true, -- Prevents noisy notifications (make false to help debug why signature isn't working)
+              -- Highlight options is null by default, but this just shows an example of how it can be used to modify the LspSignatureActiveParameter highlight property
+            },
+            keymaps = {
+              next_signature = '<A-n>',
+              previous_signature = '<A-p>',
+              next_parameter = '<A-l>',
+              previous_parameter = '<A-h>',
+              close_signature = '<A-e>',
+            },
+            display_automatically = true, -- Uses trigger characters to automatically display the signature overloads when typing a method signature
+            silent = false,
+          })
+        end
+
+        if client and client.name == 'omnisharp' then
+          map('gd', require('omnisharp_extended').telescope_lsp_definition, 'Omnisharp: [G]oto [D]efinition')
+          map('gr', require('omnisharp_extended').telescope_lsp_references, 'Omnisharp: [G]oto [R]eferences')
+          map('gI', require('omnisharp_extended').telescope_lsp_implementation, 'Omnisharp: [G]oto [I]mplementation')
+          map('<leader>D', require('omnisharp_extended').telescope_lsp_type_definition, 'Omnisharp: Type [D]efinition')
+        end
+      end
+
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
-        callback = function(event)
-          -- NOTE: Remember that Lua is a real programming language, and as such it is possible
-          -- to define small helper and utility functions so you don't have to repeat yourself.
-          --
-          -- In this case, we create a function that lets us more easily define mappings specific
-          -- for LSP related items. It sets the mode, buffer and description for us each time.
-          local map = function(keys, func, desc, mode)
-            mode = mode or 'n'
-            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
-          end
-
-          -- Jump to the definition of the word under your cursor.
-          --  This is where a variable was first declared, or where a function is defined, etc.
-          --  To jump back, press <C-t>.
-          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-
-          -- Find references for the word under your cursor.
-          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-
-          -- Jump to the implementation of the word under your cursor.
-          --  Useful when your language has ways of declaring types without an actual implementation.
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-
-          -- Jump to the type of the word under your cursor.
-          --  Useful when you're not sure what type a variable is and you want to see
-          --  the definition of its *type*, not where it was *defined*.
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-
-          -- Fuzzy find all the symbols in your current document.
-          --  Symbols are things like variables, functions, types, etc.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-
-          -- Fuzzy find all the symbols in your current workspace.
-          --  Similar to document symbols, except searches over your entire project.
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-
-          -- Rename the variable under your cursor.
-          --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-
-          -- Execute a code action, usually your cursor needs to be on top of an error
-          -- or a suggestion from your LSP for this to activate.
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
-
-          -- WARN: This is not Goto Definition, this is Goto Declaration.
-          --  For example, in C this would take you to the header.
-          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-
-          -- The following two autocommands are used to highlight references of the
-          -- word under your cursor when your cursor rests there for a little while.
-          --    See `:help CursorHold` for information about when this is executed
-          --
-          -- When you move your cursor, the highlights will be cleared (the second autocommand).
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
-            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-              buffer = event.buf,
-              group = highlight_augroup,
-              callback = vim.lsp.buf.document_highlight,
-            })
-
-            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-              buffer = event.buf,
-              group = highlight_augroup,
-              callback = vim.lsp.buf.clear_references,
-            })
-
-            vim.api.nvim_create_autocmd('LspDetach', {
-              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
-              callback = function(event2)
-                vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
-              end,
-            })
-          end
-
-          -- The following code creates a keymap to toggle inlay hints in your
-          -- code, if the language server you are using supports them
-          --
-          -- This may be unwanted, since they displace some of your code
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-            map('<leader>th', function()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-            end, '[T]oggle Inlay [H]ints')
-          end
-
-          if client and client.server_capabilities.signatureHelpProvider then
-            require('lsp-overloads').setup(client, {
-              -- UI options are mostly the same as those passed to vim.lsp.util.open_floating_preview
-              ui = {
-                border = 'single', -- The border to use for the signature popup window. Accepts same border values as |nvim_open_win()|.
-                height = nil, -- Height of the signature popup window (nil allows dynamic sizing based on content of the help)
-                width = nil, -- Width of the signature popup window (nil allows dynamic sizing based on content of the help)
-                wrap = true, -- Wrap long lines
-                wrap_at = nil, -- Character to wrap at for computing height when wrap enabled
-                max_width = nil, -- Maximum signature popup width
-                max_height = nil, -- Maximum signature popup height
-                -- Events that will close the signature popup window: use {"CursorMoved", "CursorMovedI", "InsertCharPre"} to hide the window when typing
-                close_events = { 'CursorMoved', 'BufHidden', 'InsertLeave' },
-                focusable = true, -- Make the popup float focusable
-                focus = false, -- If focusable is also true, and this is set to true, navigating through overloads will focus into the popup window (probably not what you want)
-                offset_x = 0, -- Horizontal offset of the floating window relative to the cursor position
-                offset_y = 0, -- Vertical offset of the floating window relative to the cursor position
-                floating_window_above_cur_line = false, -- Attempt to float the popup above the cursor position
-                -- (note, if the height of the float would be greater than the space left above the cursor, it will default
-                -- to placing the float below the cursor. The max_height option allows for finer tuning of this)
-                silent = true, -- Prevents noisy notifications (make false to help debug why signature isn't working)
-                -- Highlight options is null by default, but this just shows an example of how it can be used to modify the LspSignatureActiveParameter highlight property
-              },
-              keymaps = {
-                next_signature = '<A-n>',
-                previous_signature = '<A-p>',
-                next_parameter = '<A-l>',
-                previous_parameter = '<A-h>',
-                close_signature = '<A-e>',
-              },
-              display_automatically = true, -- Uses trigger characters to automatically display the signature overloads when typing a method signature
-              silent = false,
-            })
-          end
-
-          if client and client.name == 'omnisharp' then
-            map('gd', require('omnisharp_extended').telescope_lsp_definition, 'Omnisharp: [G]oto [D]efinition')
-            map('gr', require('omnisharp_extended').telescope_lsp_references, 'Omnisharp: [G]oto [R]eferences')
-            map('gI', require('omnisharp_extended').telescope_lsp_implementation, 'Omnisharp: [G]oto [I]mplementation')
-            map('<leader>D', require('omnisharp_extended').telescope_lsp_type_definition, 'Omnisharp: Type [D]efinition')
-          end
-        end,
+        callback = on_attach,
       })
 
       -- LSP servers and clients are able to communicate to each other what features they support.
@@ -730,6 +732,7 @@ require('lazy').setup({
           },
         },
         -- csharp_ls is better for doc comments
+        --[[
         csharp_ls = {
           -- TODO: Figure out which extended lsp is better
           --
@@ -738,6 +741,7 @@ require('lazy').setup({
           --  ['textDocument/typeDefinition'] = require('csharpls_extended').handler,
           --},
         },
+        --]]
       }
       -- Ensure the servers and tools above are installed
       --  To check the current status of installed tools and/or manually install
@@ -775,135 +779,49 @@ require('lazy').setup({
         cmd = { 'zls.exe' },
       }
 
-      require('roslyn').setup {
-        config = {
-          -- Here you can pass in any options that that you would like to pass to `vim.lsp.start`.
-          -- Use `:h vim.lsp.ClientConfig` to see all possible options.
-          -- The only options that are overwritten and won't have any effect by setting here:
-          --     - `name`
-          --     - `cmd`
-          --     - `root_dir`
-          name = 'roslyn',
-          cmd = { 'dotnet Microsoft.CodeAnalsys.LanguageServer.dll --logLevel=Information --exgensionLogDirectory=' .. vim.fs.dirname(vim.lsp.get_log_path()) },
-          cmd_cwd = vim.fn.stdpath 'data' .. '/roslyn',
-          root_dir = require('lspconfig').util.root_pattern('*.csproj', '*.sln')(),
-          autostart = true,
+      require('csharp').setup {
+        lsp = {
+          -- Sets if you want to use omnisharp as your LSP
+          omnisharp = {
+            -- When set to false, csharp.nvim won't launch omnisharp automatically.
+            enable = true,
+            -- When set, csharp.nvim won't install omnisharp automatically. Instead, the omnisharp instance in the cmd_path will be used.
+            cmd_path = vim.fn.stdpath 'data' .. '/mason/packages/omnisharp/omnisharp.cmd',
+            -- The default timeout when communicating with omnisharp
+            default_timeout = 1000,
+            -- Settings that'll be passed to the omnisharp server
+            enable_editor_config_support = true,
+            organize_imports = true,
+            load_projects_on_demand = false,
+            enable_analyzers_support = true,
+            enable_import_completion = true,
+            include_prerelease_sdks = true,
+            analyze_open_documents_only = false,
+            enable_package_auto_restore = true,
+            -- Launches omnisharp in debug mode
+            debug = false,
+          },
+          -- Sets if you want to use roslyn as your LSP
+          roslyn = {
+            -- When set to true, csharp.nvim will launch roslyn automatically.
+            enable = true,
+            -- Path to the roslyn LSP see 'Roslyn LSP Specific Prerequisites' above.
+            cmd_path = nil,
+          },
+          -- The capabilities to pass to the omnisharp server
           capabilities = capabilities,
+          -- on_attach function that'll be called when the LSP is attached to a buffer
+          on_attach = on_attach,
         },
-
-        --[[
-    -- if you installed `roslyn-ls` by nix, use the following:
-      exe = 'Microsoft.CodeAnalysis.LanguageServer',
-    ]]
-        exe = {
-          'dotnet',
-          vim.fs.joinpath(vim.fn.stdpath 'data', 'roslyn', 'Microsoft.CodeAnalysis.LanguageServer.dll'),
+        logging = {
+          -- The minimum log level.
+          level = 'INFO',
         },
-        args = {
-          '--logLevel=Information',
-          '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.get_log_path()),
+        dap = {
+          -- When set, csharp.nvim won't launch install and debugger automatically. Instead, it'll use the debug adapter specified.
+          --- @type string?
+          adapter_name = 'netcoredbg',
         },
-        --[[
-  -- args can be used to pass additional flags to the language server
-    ]]
-
-        -- NOTE: Set `filewatching` to false if you experience performance problems.
-        -- Defaults to true, since turning it off is a hack.
-        -- If you notice that the server is _super_ slow, it is probably because of file watching
-        -- Neovim becomes super unresponsive on some large codebases, because it schedules the file watching on the event loop.
-        -- This issue goes away by disabling this capability, but roslyn will fallback to its own file watching,
-        -- which can make the server super slow to initialize.
-        -- Setting this option to false will indicate to the server that neovim will do the file watching.
-        -- However, in `hacks.lua` I will also just don't start off any watchers, which seems to make the server
-        -- a lot faster to initialize.
-        filewatching = true,
-
-        -- Optional function that takes an array of targets as the only argument. Return the target you
-        -- want to use. If it returns `nil`, then it falls back to guessing the target like normal
-        -- Example:
-        --
-        -- choose_target = function(target)
-        --     return vim.iter(target):find(function(item)
-        --         if string.match(item, "Foo.sln") then
-        --             return item
-        --         end
-        --     end)
-        -- end
-        choose_target = nil,
-
-        -- Optional function that takes the selected target as the only argument.
-        -- Returns a boolean of whether it should be ignored to attach to or not
-        --
-        -- I am for example using this to disable a solution with a lot of .NET Framework code on mac
-        -- Example:
-        --
-        -- ignore_target = function(target)
-        --     return string.match(target, "Foo.sln") ~= nil
-        -- end
-        ignore_target = nil,
-
-        -- Whether or not to look for solution files in the child of the (root).
-        -- Set this to true if you have some projects that are not a child of the
-        -- directory with the solution file
-        broad_search = false,
-
-        -- Whether or not to lock the solution target after the first attach.
-        -- This will always attach to the target in `vim.g.roslyn_nvim_selected_solution`.
-        -- NOTE: You can use `:Roslyn target` to change the target
-        lock_target = false,
-      }
-
-      require('lspconfig').roslyn_lsp.setup {
-        name = 'roslyn',
-        cmd = { 'dotnet Microsoft.CodeAnalsys.LanguageServer.dll --logLevel=Information --exgensionLogDirectory=' .. vim.fs.dirname(vim.lsp.get_log_path()) },
-        cmd_cwd = vim.fn.stdpath 'data' .. '/roslyn',
-        root_dir = require('lspconfig').util.root_pattern('*.csproj', '*.sln')(),
-        autostart = true,
-        capabilities = capabilities,
-        filetypes = { 'cs' },
-        on_attach = function(event)
-          local map = function(keys, func, desc, mode)
-            mode = mode or 'n'
-            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
-          end
-
-          -- Jump to the definition of the word under your cursor.
-          --  This is where a variable was first declared, or where a function is defined, etc.
-          --  To jump back, press <C-t>.
-          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-
-          -- Find references for the word under your cursor.
-          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-
-          -- Jump to the implementation of the word under your cursor.
-          --  Useful when your language has ways of declaring types without an actual implementation.
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-
-          -- Jump to the type of the word under your cursor.
-          --  Useful when you're not sure what type a variable is and you want to see
-          --  the definition of its *type*, not where it was *defined*.
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-
-          -- Fuzzy find all the symbols in your current document.
-          --  Symbols are things like variables, functions, types, etc.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-
-          -- Fuzzy find all the symbols in your current workspace.
-          --  Similar to document symbols, except searches over your entire project.
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-
-          -- Rename the variable under your cursor.
-          --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-
-          -- Execute a code action, usually your cursor needs to be on top of an error
-          -- or a suggestion from your LSP for this to activate.
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
-
-          -- WARN: This is not Goto Definition, this is Goto Declaration.
-          --  For example, in C this would take you to the header.
-          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-        end,
       }
     end,
   },
@@ -1019,7 +937,9 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<Tab>'] = cmp.mapping.confirm { select = true },
+          ['<Tab>'] = cmp.mapping.confirm {
+            select = true,
+          },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines

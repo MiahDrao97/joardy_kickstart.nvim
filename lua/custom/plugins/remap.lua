@@ -78,6 +78,18 @@ local complete_xml_typeparam = function()
   end
 end
 
+local fix_usings = function()
+  if vim.bo.filetype == 'cs' then
+    vim.cmd [[ CsharpFixUsings ]]
+  end
+end
+
+local fix_all = function()
+  if vim.bo.filetype == 'cs' then
+    vim.cmd [[ CsharpFixAll ]]
+  end
+end
+
 vim.keymap.set('n', '<leader>xs', add_xml_summary)
 vim.keymap.set('n', '<leader>xS', add_xml_remarks)
 vim.keymap.set('n', '<leader>xi', add_xml_inheritdoc)
@@ -85,5 +97,8 @@ vim.keymap.set('n', '<leader>xI', add_xml_inheritdoc_cref)
 vim.keymap.set('n', '<leader>xz', add_xml_returns)
 vim.keymap.set('i', '<C-x><C-p>', complete_xml_param)
 vim.keymap.set('i', '<C-x><C-t>', complete_xml_typeparam)
+vim.keymap.set('i', '<C-r><C-e>', fix_usings)
+vim.keymap.set('n', '<leader>re', fix_usings)
+vim.keymap.set('n', '<leader>rw', fix_all)
 
 return {}

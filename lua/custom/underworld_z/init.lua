@@ -211,7 +211,7 @@ M.descend_to_the_underworld = function()
           priority = 131, -- this puts it right at the top
         })
       end
-      if token.type == 'function' and (vim.bo.filetype == 'zig' or vim.bo.filetype == 'rust') then
+      if token.type == 'function' and (vim.bo.filetype == 'zig' or vim.bo.filetype == 'rust' or vim.bo.filetype == 'lua') then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static', {
           priority = 131, -- this puts it right at the top
         })
