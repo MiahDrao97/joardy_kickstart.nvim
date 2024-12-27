@@ -664,7 +664,7 @@ require('lazy').setup({
 
         lua_ls = {
           -- cmd = {...},
-          -- filetypes = { ...},
+          -- filetypes = {...},
           -- capabilities = {},
           settings = {
             Lua = {
@@ -678,6 +678,7 @@ require('lazy').setup({
         },
         -- omnisharp is better for cmp and has semantic tokens for delegates and extn methods
         omnisharp = {
+          cmd = { 'dotnet', vim.fn.stdpath 'data' .. '/mason/packages/omnisharp/libexec/OmniSharp.dll' },
           handlers = {
             ['textDocument/definition'] = require('omnisharp_extended').definition_handler,
             ['textDocument/typeDefinition'] = require('omnisharp_extended').type_definition_handler,
@@ -773,6 +774,137 @@ require('lazy').setup({
       require('lspconfig').zls.setup {
         cmd = { 'zls.exe' },
       }
+
+      require('roslyn').setup {
+        config = {
+          -- Here you can pass in any options that that you would like to pass to `vim.lsp.start`.
+          -- Use `:h vim.lsp.ClientConfig` to see all possible options.
+          -- The only options that are overwritten and won't have any effect by setting here:
+          --     - `name`
+          --     - `cmd`
+          --     - `root_dir`
+          name = 'roslyn',
+          cmd = { 'dotnet Microsoft.CodeAnalsys.LanguageServer.dll --logLevel=Information --exgensionLogDirectory=' .. vim.fs.dirname(vim.lsp.get_log_path()) },
+          cmd_cwd = vim.fn.stdpath 'data' .. '/roslyn',
+          root_dir = require('lspconfig').util.root_pattern('*.csproj', '*.sln')(),
+          autostart = true,
+          capabilities = capabilities,
+        },
+
+        --[[
+    -- if you installed `roslyn-ls` by nix, use the following:
+      exe = 'Microsoft.CodeAnalysis.LanguageServer',
+    ]]
+        exe = {
+          'dotnet',
+          vim.fs.joinpath(vim.fn.stdpath 'data', 'roslyn', 'Microsoft.CodeAnalysis.LanguageServer.dll'),
+        },
+        args = {
+          '--logLevel=Information',
+          '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.get_log_path()),
+        },
+        --[[
+  -- args can be used to pass additional flags to the language server
+    ]]
+
+        -- NOTE: Set `filewatching` to false if you experience performance problems.
+        -- Defaults to true, since turning it off is a hack.
+        -- If you notice that the server is _super_ slow, it is probably because of file watching
+        -- Neovim becomes super unresponsive on some large codebases, because it schedules the file watching on the event loop.
+        -- This issue goes away by disabling this capability, but roslyn will fallback to its own file watching,
+        -- which can make the server super slow to initialize.
+        -- Setting this option to false will indicate to the server that neovim will do the file watching.
+        -- However, in `hacks.lua` I will also just don't start off any watchers, which seems to make the server
+        -- a lot faster to initialize.
+        filewatching = true,
+
+        -- Optional function that takes an array of targets as the only argument. Return the target you
+        -- want to use. If it returns `nil`, then it falls back to guessing the target like normal
+        -- Example:
+        --
+        -- choose_target = function(target)
+        --     return vim.iter(target):find(function(item)
+        --         if string.match(item, "Foo.sln") then
+        --             return item
+        --         end
+        --     end)
+        -- end
+        choose_target = nil,
+
+        -- Optional function that takes the selected target as the only argument.
+        -- Returns a boolean of whether it should be ignored to attach to or not
+        --
+        -- I am for example using this to disable a solution with a lot of .NET Framework code on mac
+        -- Example:
+        --
+        -- ignore_target = function(target)
+        --     return string.match(target, "Foo.sln") ~= nil
+        -- end
+        ignore_target = nil,
+
+        -- Whether or not to look for solution files in the child of the (root).
+        -- Set this to true if you have some projects that are not a child of the
+        -- directory with the solution file
+        broad_search = false,
+
+        -- Whether or not to lock the solution target after the first attach.
+        -- This will always attach to the target in `vim.g.roslyn_nvim_selected_solution`.
+        -- NOTE: You can use `:Roslyn target` to change the target
+        lock_target = false,
+      }
+
+      require('lspconfig').roslyn_lsp.setup {
+        name = 'roslyn',
+        cmd = { 'dotnet Microsoft.CodeAnalsys.LanguageServer.dll --logLevel=Information --exgensionLogDirectory=' .. vim.fs.dirname(vim.lsp.get_log_path()) },
+        cmd_cwd = vim.fn.stdpath 'data' .. '/roslyn',
+        root_dir = require('lspconfig').util.root_pattern('*.csproj', '*.sln')(),
+        autostart = true,
+        capabilities = capabilities,
+        filetypes = { 'cs' },
+        on_attach = function(event)
+          local map = function(keys, func, desc, mode)
+            mode = mode or 'n'
+            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+          end
+
+          -- Jump to the definition of the word under your cursor.
+          --  This is where a variable was first declared, or where a function is defined, etc.
+          --  To jump back, press <C-t>.
+          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+
+          -- Find references for the word under your cursor.
+          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+
+          -- Jump to the implementation of the word under your cursor.
+          --  Useful when your language has ways of declaring types without an actual implementation.
+          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+
+          -- Jump to the type of the word under your cursor.
+          --  Useful when you're not sure what type a variable is and you want to see
+          --  the definition of its *type*, not where it was *defined*.
+          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
+
+          -- Fuzzy find all the symbols in your current document.
+          --  Symbols are things like variables, functions, types, etc.
+          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+
+          -- Fuzzy find all the symbols in your current workspace.
+          --  Similar to document symbols, except searches over your entire project.
+          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+
+          -- Rename the variable under your cursor.
+          --  Most Language Servers support renaming across files, etc.
+          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+
+          -- Execute a code action, usually your cursor needs to be on top of an error
+          -- or a suggestion from your LSP for this to activate.
+          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+
+          -- WARN: This is not Goto Definition, this is Goto Declaration.
+          --  For example, in C this would take you to the header.
+          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+        end,
+      }
     end,
   },
 
@@ -796,7 +928,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true, cs = true }
+        local disable_filetypes = { c = true, cpp = true }
         local lsp_format_opt
         if disable_filetypes[vim.bo[bufnr].filetype] then
           lsp_format_opt = 'never'
