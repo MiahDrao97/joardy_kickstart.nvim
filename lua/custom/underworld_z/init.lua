@@ -110,6 +110,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, 'underworld_z.preprocessorText', { fg = colors.reference_orange })
   vim.api.nvim_set_hl(0, 'underworld_z.mutable', { link = '@variable' })
   vim.api.nvim_set_hl(0, 'underworld_z.macro', { link = '@function.macro' })
+  vim.api.nvim_set_hl(0, 'underworld_z.control_flow', { fg = colors.ctrl_flow_pink })
   vim.api.nvim_set_hl(0, '@attribute', { link = 'Type' })
   vim.api.nvim_set_hl(0, '@constructor', { link = 'Type' })
   vim.api.nvim_set_hl(0, '@operator', { fg = colors.operator_white })
@@ -274,6 +275,11 @@ M.descend_to_the_underworld = function()
       end
       if token.type == 'derive' and vim.bo.filetype == 'rust' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.interface', {
+          priority = 128, -- this puts it right at the top
+        })
+      end
+      if token.type == 'controlKeyword' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.control_flow', {
           priority = 128, -- this puts it right at the top
         })
       end
