@@ -97,6 +97,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, 'underworld_z.interface', { link = '@lsp.type.interface' })
   vim.api.nvim_set_hl(0, '@string', { fg = colors.string_rusty_orange })
   vim.api.nvim_set_hl(0, '@string.escape', { fg = colors.string_escape_yellow })
+  vim.api.nvim_set_hl(0, 'underworld_z.escape', { link = '@string.escape' })
   vim.api.nvim_set_hl(0, '@character', { link = '@string' })
   vim.api.nvim_set_hl(0, 'Type', { fg = colors.struct_class_green })
   vim.api.nvim_set_hl(0, 'underworld_z.class', { link = 'Type' })
@@ -279,7 +280,10 @@ M.descend_to_the_underworld = function()
         })
       end
       if token.type == 'controlKeyword' then
-        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.control_flow', {
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.control_flow', {})
+      end
+      if token.type == 'stringEscapeCharacter' then
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.escape', {
           priority = 128, -- this puts it right at the top
         })
       end
