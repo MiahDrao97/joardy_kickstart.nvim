@@ -21,6 +21,13 @@ vim.keymap.set('v', '<leader>y', '"+y')
 vim.keymap.set('n', '<leader>Y', '"+Y')
 
 vim.keymap.set('n', '<leader>s', ':%s/\\<<C-r><C-w>\\>/<C-r><C-r><C-w>/gI<Left><Left><Left>')
+vim.keymap.set('n', '<C-b>', function()
+  if vim.wo.relativenumber then
+    vim.wo.relativenumber = false
+  else
+    vim.wo.relativenumber = true
+  end
+end)
 
 local add_xml_summary = function()
   if vim.bo.filetype == 'cs' then
