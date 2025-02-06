@@ -18,7 +18,6 @@
 [
  "for"
  "while"
- "inline"
  "continue"
  "break"
  ] @keyword.repeat
@@ -55,6 +54,7 @@
  "callconv"
  "error"
  "export"
+ "inline"
  "linksection"
  "noalias"
  "noinline"
