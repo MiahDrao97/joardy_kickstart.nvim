@@ -81,6 +81,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@lsp.type.function', { fg = colors.static_periwinkle })
   vim.api.nvim_set_hl(0, 'Function', { fg = colors.static_periwinkle })
   vim.api.nvim_set_hl(0, 'underworld_z.static', { fg = colors.static_periwinkle, bold = true })
+  vim.api.nvim_set_hl(0, 'underworld_z.static_prop', { fg = colors.param_blue, bold = true })
   vim.api.nvim_set_hl(0, 'underworld_z.method', { link = '@function.method' })
   vim.api.nvim_set_hl(0, '@lsp.type.method', { link = '@function.method' })
   vim.api.nvim_set_hl(0, '@function.method', { fg = colors.method_orange })
@@ -175,7 +176,7 @@ M.descend_to_the_underworld = function()
         })
       end
       if token.type == 'property' and token.modifiers.static then
-        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static', {
+        vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static_prop', {
           priority = 128, -- this puts it right at the top
         })
       end
