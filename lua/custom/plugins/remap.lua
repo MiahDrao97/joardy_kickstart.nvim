@@ -32,6 +32,8 @@ end)
 local add_xml_summary = function()
   if vim.bo.filetype == 'cs' then
     vim.cmd [[execute "normal O/// <summary>\<CR>\<CR></summary>\<ESC>kA "]]
+  elseif vim.bo.filetype == 'zig' then
+    vim.cmd [[execute "normal O/// \<ESC>a"]]
   else
     vim.cmd [[ echo 'XML docs not configured for this filetype' ]]
   end
