@@ -125,6 +125,8 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@operator.error', { fg = colors.err_tag_maroon })
   vim.api.nvim_set_hl(0, '@punctuation.ptr', { fg = colors.bracket_grey })
   vim.api.nvim_set_hl(0, '@lsp.typemod.typealias.defaultLibrary.rust', { link = '@lsp.typemod.typeAlias' })
+  vim.api.nvim_set_hl(0, 'TodoFgNOTE', { fg = colors.struct_class_green })
+  vim.api.nvim_set_hl(0, 'TodoBgNOTE', { bg = colors.struct_class_green, fg = '#000000' })
 
   -- background
   vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
