@@ -354,7 +354,7 @@ require('lazy').setup({
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
-      { 'ryanoasis/vim-devicons' },
+      { 'prichrd/netrw.nvim', opts = {} },
     },
     config = function()
       require('nvim-web-devicons').setup {
@@ -374,6 +374,9 @@ require('lazy').setup({
         variant = 'dark',
         -- same as `override` but specifically for overrides by filename
         -- takes effect when `strict` is true
+      }
+      require('netrw').setup {
+        use_devicons = true,
       }
       -- Telescope is a fuzzy finder that comes with a lot of different things that
       -- it can fuzzy find! It's more than just a "file finder", it can search
