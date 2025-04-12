@@ -1,0 +1,86 @@
+{
+    "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+    "blocks": [
+      {
+        "alignment": "right",
+        "segments": [
+          {
+            "foreground": "#BBC4B9",
+            "leading_diamond":"",
+            "properties": {
+              "display_host": true
+            },
+            "style": "diamond",
+            "template": "  {{ .UserName }} ",
+            "type": "session"
+          },
+          {
+            "foreground": "#BFA8BF",
+            "properties": {
+              "branch_icon": "\ue725 ",
+              "fetch_stash_count": true,
+              "fetch_status": true,
+              "fetch_upstream_icon": true,
+              "fetch_worktree_count": true
+            },
+            "style": "diamond",
+            "template": "<#fff>{{ .UpstreamIcon }}</>{{ .HEAD }}",
+            "type": "git"
+          },
+          {
+            "foreground": "#BFA8BF",
+            "style": "powerline",
+            "template": " <#fff>\uf120</> {{ .Name }} ",
+            "type": "shell"
+          }
+        ],
+        "type": "prompt"
+      },
+      {
+        "alignment": "left",
+        "segments": [
+          {
+            "foreground": "#B6D6F2",
+            "leading_diamond": "\uf120 ",
+            "properties": {
+              "folder_icon": "\u002F",
+              "folder_separator_icon": " \u002F ",
+              "home_icon": "home",
+              "style": "agnoster_full"
+            },
+            "style": "diamond",
+            "template": " \ue5ff {{ .Path }}",
+            "trailing_diamond": "",
+            "type": "path"
+          }        ],
+        "type": "prompt"
+      },
+      {
+        "alignment": "left",
+        "newline": true,
+        "segments": [
+          {
+            "foreground": "#BFA8BF",
+            "foreground_templates": [
+              "{{ if gt .Code 0 }}#fff{{ end }}"
+            ],
+            "properties": {
+              "always_enabled": true
+            },
+            "style": "plain",
+            "template": "λ ",
+            "type": "status"
+          }
+        ],
+        "type": "prompt"
+      }
+    ],
+    "console_title_template": "{{ .Folder }}",
+    "transient_prompt": {
+      "background": "transparent",
+      "foreground": "#FEF5ED",
+      "template": "\ue285 "
+    },
+    "version": 3
+  }
+
