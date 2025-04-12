@@ -29,6 +29,7 @@ local colors = {
   eyesore_orange = '#ff9e64',
   reference_orange = '#ffb670',
   bkgd = '#160022',
+  -- a good purple: #9446b0
 }
 
 M.descend_to_the_underworld = function()
