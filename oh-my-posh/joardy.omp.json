@@ -15,7 +15,7 @@
             "type": "session"
           },
           {
-            "foreground": "#D996B2",
+            "foreground": "#D286A9",
             "properties": {
               "branch_icon": "\ue725 ",
               "fetch_stash_count": true,
@@ -28,7 +28,7 @@
             "type": "git"
           },
           {
-            "foreground": "#D996B2",
+            "foreground": "#D286A9",
             "style": "powerline",
             "template": " <#fff>\uf120</> {{ .Name }} ",
             "type": "shell"
@@ -60,7 +60,7 @@
         "newline": true,
         "segments": [
           {
-            "foreground": "#D996B2",
+            "foreground": "#D286A9",
             "foreground_templates": [
               "{{ if gt .Code 0 }}#fff{{ end }}"
             ],
