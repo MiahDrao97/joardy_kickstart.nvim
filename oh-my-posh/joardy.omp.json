@@ -3,6 +3,7 @@
     "blocks": [
       {
         "alignment": "right",
+        "newline": true,
         "segments": [
           {
             "foreground": "#4AA9E8",
@@ -38,6 +39,7 @@
       },
       {
         "alignment": "left",
+        "newline": true,
         "segments": [
           {
             "foreground": "#88B8E0",
@@ -52,7 +54,8 @@
             "template": "<#689>\uf120 </> \ue5ff {{ .Path }}",
             "trailing_diamond": "",
             "type": "path"
-          }        ],
+          }
+      ],
         "type": "prompt"
       },
       {
