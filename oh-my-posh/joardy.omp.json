@@ -11,7 +11,7 @@
               "display_host": true
             },
             "style": "diamond",
-            "template": "  {{ .UserName }} ",
+            "template": " {{ .UserName }} ",
             "type": "session"
           },
           {
@@ -30,7 +30,7 @@
           {
             "foreground": "#D286A9",
             "style": "powerline",
-            "template": " <#fff>\uf120</> {{ .Name }} ",
+            "template": "<#fff> \uf120 </> {{ .Name }} ",
             "type": "shell"
           }
         ],
@@ -68,7 +68,7 @@
               "always_enabled": true
             },
             "style": "plain",
-            "template": "λ ",
+            "template": "λ  ",
             "type": "status"
           }
         ],
@@ -79,7 +79,7 @@
     "transient_prompt": {
       "background": "transparent",
       "foreground": "#FEF5ED",
-      "template": "\ue285 "
+      "template": "  \ue285 "
     },
     "version": 3
   }
