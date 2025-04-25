@@ -64,9 +64,6 @@
         "segments": [
           {
             "foreground": "#D286A9",
-            "foreground_templates": [
-              "{{ if gt .Code 0 }}#fff{{ end }}"
-            ],
             "properties": {
               "always_enabled": true
             },
