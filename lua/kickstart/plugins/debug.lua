@@ -26,6 +26,31 @@ return {
   keys = function(_, keys)
     local dap = require 'dap'
     local dapui = require 'dapui'
+
+    -- config Zig, using codelldb
+    -- https://eliasdorneles.com/til/posts/customizing-neovim-debugging-highlight-zig-debug-w-codelldb/
+    dap.adapters.codelldb = {
+      type = 'server',
+      port = '${port}',
+      executable = {
+        command = 'codelldb',
+        args = { '--port', '${port}' },
+      },
+    }
+
+    -- setup a debugger for zig
+    dap.configurations.zig = {
+      {
+        name = 'Launch',
+        type = 'codelldb',
+        request = 'launch',
+        program = '${workspaceFolder}/zig-out/bin/${workspaceFolderBasename}',
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = {},
+      },
+    }
+
     return {
       -- Basic debugging keymaps, feel free to change to your liking!
       { '<F5>', dap.continue, desc = 'Debug: Start/Continue' },
