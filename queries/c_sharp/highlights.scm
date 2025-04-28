@@ -14,6 +14,14 @@
   ))
  )
 
+(
+ (lambda_expression (
+    (modifier) @keyword (#any-of? @keyword "static" "async")
+    parameters: (_)
+    body: (_)
+  ))
+ )
+
 ((comment) @comment
   (#lua-match? @comment "^/%*.*%*//$")
   (#set! priority "132")
