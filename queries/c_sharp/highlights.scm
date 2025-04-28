@@ -2,9 +2,17 @@
 ;; extends
 
 ((identifier) @keyword (#any-of? @keyword "nameof" "_"))
-("base") @keyword
+["base"] @keyword
 
 ((identifier) @type.builtin (#any-of? @type.builtin "dynamic"))
+
+(
+ (parameter (
+    (modifier) @keyword (#any-of? @keyword "this")
+    type: (_)
+    name: (_)
+  ))
+ )
 
 ((comment) @comment
   (#lua-match? @comment "^/%*.*%*//$")

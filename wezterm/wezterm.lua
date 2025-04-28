@@ -15,6 +15,14 @@ local SOLID_LEFT_ARROW = wezterm.nerdfonts.pl_right_hard_divider
 -- The filled in variant of the > symbol
 local SOLID_RIGHT_ARROW = wezterm.nerdfonts.pl_left_hard_divider
 
+config.keys = {
+  {
+    key = 'v',
+    mods = 'CTRL',
+    action = wezterm.action.PasteFrom 'Clipboard',
+  },
+}
+
 -- TODO: color scheme
 config.colors = {
   cursor_bg = '#cdcdd8',
