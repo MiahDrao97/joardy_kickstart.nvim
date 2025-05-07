@@ -8,7 +8,7 @@
 
 (
  (parameter (
-    (modifier) @keyword (#any-of? @keyword "this")
+    (modifier) @keyword (#any-of? @keyword "this" "ref" "in" "out")
     type: (_)
     name: (_)
   ))
