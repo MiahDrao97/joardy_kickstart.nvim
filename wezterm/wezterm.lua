@@ -5,7 +5,7 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
 config.default_prog = { 'pwsh.exe', '-NoLogo' }
-config.font = wezterm.font('IosevkaTerm Nerd Font', { weight = 'Regular', stretch = 'Normal', style = 'Normal' })
+config.font = wezterm.font('IosevkaTerm Nerd Font', { weight = 'Light', stretch = 'Normal', style = 'Normal' })
 config.font_size = 14.0
 config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
 
