@@ -135,3 +135,11 @@
   )
 )
 
+; Constants - Redefining so their priority can be set higher than @variable.member
+((identifier) @constant
+  (#lua-match? @constant "^[A-Z][A-Z_0-9]+$"))
+
+(field_expression
+  .
+  member: (identifier) @constant (#set! priority "126")
+)
