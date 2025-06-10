@@ -67,6 +67,7 @@ return {
       },
       -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
       { '<F7>', dapui.toggle, desc = 'Debug: See last session result.' },
+      { '<F12>', dap.clear_breakpoints },
       unpack(keys),
     }
   end,
@@ -119,18 +120,15 @@ return {
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-    --[[
     dap.configurations.cs = {
       {
         type = 'coreclr',
         name = 'launch - netcoredbg',
         request = 'launch',
-        console = 'integratedTerminal',
         program = function()
-          return vim.fn.input('Path to dll', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+          return vim.fn.input('Path to dll', vim.fn.getcwd() .. '/bin/Debug/net8.0/', 'file')
         end,
       },
     }
-    --]]
   end,
 }
