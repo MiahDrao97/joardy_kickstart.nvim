@@ -36,21 +36,18 @@
  ] @boolean
 
 [
- "usingnamespace"
  "struct"
  "enum"
  "union"
  "var"
  "const"
  "extern"
- "async"
  "asm"
  "comptime"
  "addrspace"
  "align"
  "allowzero"
  "anyframe"
- "await"
  "callconv"
  "error"
  "export"
