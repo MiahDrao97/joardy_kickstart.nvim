@@ -6,8 +6,26 @@ local config = wezterm.config_builder()
 
 config.default_prog = { 'pwsh.exe', '-NoLogo' }
 config.font = wezterm.font('IosevkaTerm Nerd Font', { weight = 'Light', stretch = 'Normal', style = 'Normal' })
-config.font_size = 15.0
+config.font_size = 14.0
 config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
+
+config.background = {
+  {
+    source = {
+      File = 'C:/Users/joard/AppData/Local/nvim/wezterm/Ken_Kaneki.jpg',
+    },
+    hsb = {
+      -- Darken the background image
+      brightness = 0.02,
+      -- You can adjust the hue by scaling its value.
+      -- a multiplier of 1.0 leaves the value unchanged.
+      hue = 1.0,
+      -- You can adjust the saturation also.
+      saturation = 1.0,
+    },
+    vertical_align = 'Middle',
+  },
+}
 
 -- The filled in variant of the < symbol
 local SOLID_LEFT_ARROW = wezterm.nerdfonts.pl_right_hard_divider
@@ -23,7 +41,6 @@ config.keys = {
   },
 }
 
--- TODO: color scheme
 config.colors = {
   cursor_bg = '#cdcdd8',
   cursor_fg = 'black',
@@ -126,7 +143,7 @@ config.colors = {
   },
 }
 
-config.window_background_opacity = 0.95
+config.window_background_opacity = 0.96
 config.use_fancy_tab_bar = true
 config.tab_and_split_indices_are_zero_based = true
 config.enable_tab_bar = true
