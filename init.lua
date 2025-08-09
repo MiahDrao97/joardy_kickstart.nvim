@@ -798,7 +798,7 @@ require('lazy').setup({
       -- omg, it was defaulting back to the mason-installed zls
       -- we're just assuming zls.exe is added to PATH
       require('lspconfig').zls.setup {
-        cmd = { 'zls.exe' },
+        cmd = { 'zls', '--enable-stderr-logs' },
       }
 
       require('csharp').setup {
