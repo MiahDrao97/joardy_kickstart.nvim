@@ -29,7 +29,7 @@ local colors = {
   eyesore_orange = '#ff9e64',
   reference_orange = '#ffb670',
   bkgd = '#160022',
-  -- a good purple: #9446b0
+  deep_purple = '#9446b0',
 }
 
 M.descend_to_the_underworld = function()
@@ -83,6 +83,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@variable.capture_use', { link = '@variable.capture' })
   vim.api.nvim_set_hl(0, '@property', { fg = colors.prop_blue_grey })
   vim.api.nvim_set_hl(0, 'underworld_z.property', { link = '@property' })
+  vim.api.nvim_set_hl(0, 'underworld_z.deep_property', { fg = colors.deep_purple })
   vim.api.nvim_set_hl(0, '@lsp.type.errorTag', { fg = colors.err_tag_maroon })
   vim.api.nvim_set_hl(0, '@lsp.type.function', { fg = colors.static_periwinkle })
   vim.api.nvim_set_hl(0, 'Function', { fg = colors.static_periwinkle })
