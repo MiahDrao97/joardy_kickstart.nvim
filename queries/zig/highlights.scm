@@ -111,26 +111,16 @@
 
 (call_expression
   function: (field_expression
-    object: (_)+
-    member: (identifier) @function.call (#set! priority "131")
+    member: (identifier) @function.declaration_literal (#set! priority "129")
   )
 )
 
-(call_expression
-  function: (field_expression
-    member: (identifier) @function.declaration_literal (#set! priority "130")
-  )
-)
+;; It's a type if it starts with a capital letter
+;; ((identifier) @type
+;;   (#match? @type "^[A-Z][A-Za-z0-9_]*$")
+;;   (#set! priority "129")
+;; )
 
-(call_expression
-  function: (identifier) @function.call (#set! priority "130")
-)
-
-(call_expression
-  function: (error_union_type
-    ok: (identifier) @function.call (#set! priority "130")
-  )
-)
 
 ; Constants - Redefining so their priority can be set higher than @variable.member
 ((identifier) @constant
