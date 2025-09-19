@@ -26,7 +26,7 @@ local colors = {
   struct_class_green = '#54e0aa',
   struct_green = '#84e488',
   tealest = '#60e0ca',
-  army_teal = '#40a8a0',
+  army_teal = '#40b0a8',
   comment_grey = '#4d5679',
   eyesore_orange = '#ff9e64',
   reference_orange = '#ffb670',
@@ -129,7 +129,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@constant', { fg = colors.param_blue })
   vim.api.nvim_set_hl(0, '@constant.c_sharp', { fg = colors.err_tag_maroon })
   vim.api.nvim_set_hl(0, '@comment', { fg = colors.comment_grey })
-  vim.api.nvim_set_hl(0, '@label', { fg = colors.army_teal })
+  vim.api.nvim_set_hl(0, '@label', { fg = colors.army_teal, italic = true })
   vim.api.nvim_set_hl(0, '@operator.reference', { fg = colors.reference_orange })
   vim.api.nvim_set_hl(0, '@operator.optional', { fg = colors.bracket_grey })
   vim.api.nvim_set_hl(0, '@operator.error', { fg = colors.err_tag_maroon })
