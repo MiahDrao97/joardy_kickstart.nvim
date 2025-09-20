@@ -111,7 +111,24 @@
 
 (call_expression
   function: (field_expression
+    object: (_)+
+    member: (identifier) @function.call (#set! priority "129")
+  )
+)
+
+(call_expression
+  function: (field_expression
     member: (identifier) @function.declaration_literal (#set! priority "129")
+  )
+)
+
+(call_expression
+  function: (identifier) @function.call (#set! priority "129")
+)
+
+(call_expression
+  function: (error_union_type
+    ok: (identifier) @function.call (#set! priority "129")
   )
 )
 
