@@ -15,6 +15,14 @@
  )
 
 (
+   (constructor_declaration
+      name: ((identifier) @keyword (#any-of? @keyword "extension"))
+      parameters: (_)
+      body: (_)
+   )
+)
+
+(
  (lambda_expression (
     (modifier) @keyword (#any-of? @keyword "static" "async")
     parameters: (_)
@@ -43,3 +51,9 @@
  "!="
  ] @operator.error
 
+(
+[
+  "async"
+  "await"
+] @keyword.coroutine (#set! priority 130)
+   )
