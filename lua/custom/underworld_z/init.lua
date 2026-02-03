@@ -127,6 +127,8 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@constructor', { link = 'Type' })
   vim.api.nvim_set_hl(0, '@operator', { fg = colors.operator_white })
   vim.api.nvim_set_hl(0, '@constant', { fg = colors.param_blue })
+  vim.api.nvim_set_hl(0, '@lsp.type.constant', { link = '@constant' })
+  vim.api.nvim_set_hl(0, '@lsp.typemod.constant.static', { link = '@constant' })
   vim.api.nvim_set_hl(0, '@constant.c_sharp', { fg = colors.err_tag_maroon })
   vim.api.nvim_set_hl(0, '@comment', { fg = colors.comment_grey })
   vim.api.nvim_set_hl(0, '@label', { fg = colors.army_teal, italic = true })
@@ -243,6 +245,17 @@ M.descend_to_the_underworld = function()
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.class', {
           priority = 131, -- this puts it right at the top
         })
+      end
+      if vim.bo.filetype == 'cs' and token.type == 'field' then
+        if token.modifiers.static then
+          vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static_prop', {
+            priority = 129, -- this puts it right at the top
+          })
+        else
+          vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.property', {
+            priority = 129, -- this puts it right at the top
+          })
+        end
       end
       if token.type == 'errorTag' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.error', {
