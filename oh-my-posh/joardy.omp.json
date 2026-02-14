@@ -1,3 +1,7 @@
+// for installation:
+// nvim $PROLILE
+// In that file add the following:
+// oh-my-posh init pwsh --config "C:\Users\<username>\AppData\Local\nvim\oh-my-posh\joardy.omp.json" | Invoke-Expression
 {
     "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
     "blocks": [
