@@ -220,7 +220,7 @@ M.descend_to_the_underworld = function()
           priority = 132, -- this puts it right at the top
         })
       end
-      if token.type == 'extensionMethodName' then
+      if token.type == 'extensionMethodName' or token.type == 'extensionMethod' then
         vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.extn_method', {
           priority = 132, -- this puts it right at the top
         })
@@ -246,7 +246,7 @@ M.descend_to_the_underworld = function()
           priority = 131, -- this puts it right at the top
         })
       end
-      if vim.bo.filetype == 'cs' and token.type == 'field' then
+      if vim.bo.filetype == 'cs' and (token.type == 'field' or token.type == 'fieldName') then
         if token.modifiers.static then
           vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, 'underworld_z.static_prop', {
             priority = 129, -- this puts it right at the top
