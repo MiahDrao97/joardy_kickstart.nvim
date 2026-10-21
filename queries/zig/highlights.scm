@@ -106,7 +106,7 @@
 )
 
 (payload
-  ((identifier) @variable.capture_group)
+  ((identifier) @variable.capture_group (#set! priority "125"))
 )
 
 (call_expression
