@@ -78,6 +78,7 @@ M.descend_to_the_underworld = function()
   vim.api.nvim_set_hl(0, '@punctuation.bracket', { fg = colors.bracket_grey })
   vim.api.nvim_set_hl(0, '@punctuation.special', { fg = colors.static_periwinkle })
   vim.api.nvim_set_hl(0, '@variable.parameter', { fg = colors.param_blue })
+  vim.api.nvim_set_hl(0, '@variable.parameter.zig', { fg = colors.variable_periwinkle }) -- capture groups fall into this category
   vim.api.nvim_set_hl(0, 'underworld_z.parameter', { link = '@variable.parameter' })
   vim.api.nvim_set_hl(0, '@lsp.type.enumMember', { fg = colors.param_blue, bold = false })
   vim.api.nvim_set_hl(0, '@lsp.type.property', { link = '@property' })
